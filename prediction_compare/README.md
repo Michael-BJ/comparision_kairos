@@ -103,4 +103,4 @@ python3 compare_pred.py --set mix --sweep        # CPU only, a few minutes
 python3 compare_pred.py --set smooth --sweep
 ```
 
-Results: `results/pred_compare_{mix,smooth}.json` (all groups, 1 / 2 / 4 s errors, bootstrap CIs, sweep). Run it when no Gazebo test is running (`../operate_collection.md`, section 5).
+Results: `results/pred_compare_{mix,smooth}.json` (all groups, 1 / 2 / 4 s errors, bootstrap CIs, sweep). Run it when no Gazebo test is running (`../README.md`, section 5).

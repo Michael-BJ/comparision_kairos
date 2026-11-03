@@ -65,4 +65,4 @@ cd ~/kairos_test/20261102_compare && python3 hits.py AGILE
 
 Results: `~/kairos_test/20261102_compare/logs/AGILE`, `runs/AGILE/<stamp>_<world>_agile_autonomy/summary.json`, `odom_AGILE.npz`.
 
-Test rules: see `../README.md` and `../operate_collection.md`.
+Test rules: see `../README.md`.

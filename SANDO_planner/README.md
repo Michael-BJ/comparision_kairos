@@ -66,4 +66,4 @@ cd ~/kairos_test/20261102_compare && python3 hits.py SANDO
 
 `MAPPER=d435` uses the D435 for the map too (SANDO's `unknown_dynamic` simulation setup).
 
-Test rules: see `../README.md` and `../operate_collection.md` (the sensor exception of this package must be listed there).
+Test rules: see `../README.md` (the sensor exception of this package must be listed there).

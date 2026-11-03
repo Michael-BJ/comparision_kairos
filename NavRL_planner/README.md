@@ -27,7 +27,7 @@ The ROS 2 package is set up for a Unitree Go2 (ground robot: `height_control` fa
 - The policy never sees images: its inputs are map rays and obstacle states, made by NavRL's own modules. Our two OAK-D cameras only feed those modules, so the camera rig does not require a new policy. NavRL's own claim is zero-shot transfer from its training scene.
 - NavRL is trained by RL in Isaac Sim. The KAIROS dataset (expert demonstrations in `.h5`) cannot train it without changing the method; a behaviour-cloned NavRL would no longer be NavRL.
 - Retraining in our worlds means rebuilding them in Isaac Sim 2023.1.0-hotfix.1 (pinned version, not installed; its support of the RTX 5060 Ti / Blackwell is doubtful) and days of PPO. That result would be "NavRL retrained by us", not the published method.
-- Rule 5 of `../operate_collection.md` is met by stating the data: published checkpoint, NavRL's Isaac training scene.
+- Rule 5 of `../README.md` is met by stating the data: published checkpoint, NavRL's Isaac training scene.
 
 Out of distribution, stated with the result: spheres 0.8-2.0 m/s (training 0.5-1.5), low walls with 1.7-2.3 m gaps and a 12.9 m corridor (training: free-standing pillars).
 
@@ -51,4 +51,4 @@ Internal parameters (map, detector thresholds, shield horizon) stay at NavRL's v
 2. Run the policy offline on recorded rays and obstacle states, compare with `quick-demos` outputs.
 3. Node + launch + `run.sh` like `../NEO_planner`; smoke test 2 passes, then 24.
 
-Test rules: see `../README.md` and `../operate_collection.md`.
+Test rules: see `../README.md`.
