@@ -1,0 +1,13 @@
+diff --git a/decomp_test_node/src/test_path_decomp_3d.cpp b/decomp_test_node/src/test_path_decomp_3d.cpp
+index a0ee743..f3589b5 100644
+--- a/decomp_test_node/src/test_path_decomp_3d.cpp
++++ b/decomp_test_node/src/test_path_decomp_3d.cpp
+@@ -7,7 +7,7 @@
+ #include <nav_msgs/msg/path.hpp>
+ #include <pcl_conversions/pcl_conversions.h>
+ 
+-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
++#include <tf2_geometry_msgs/tf2_geometry_msgs.hpp>
+ #include <decomp_ros_msgs/msg/ellipsoid_array.hpp>
+ #include <decomp_ros_msgs/msg/polyhedron_array.hpp>
+ #include <chrono>

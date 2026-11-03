@@ -1,0 +1,9 @@
+# colcon workspace of SANDO (third-party clones, build output); rebuilt by SANDO_planner/build.sh
+SANDO_planner/ws/
+__pycache__/
+*.pyc
+*.log
+*.pth
+*.pt
+*.h5
+*.npz

@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  SANDO's original sensors on the test airframe (comparision_for_kairos/SANDO_planner, 2026-11-02):
+  x500_oakd_x2_60_tw2 (same x500_base, same thrust-to-weight 2 motors, same GT odometry plugin) with the two OAK-D
+  replaced by the sensors of SANDO's quadrotor.urdf.xacro (v0.0.3):
+    Livox Mid-360  at base_link (0, 0, 0.2), rpy (0, 0.3, 0); vertical -7.22 .. 55.22 deg, 360 deg, 0.001 .. 20 m
+                   (urdf/mid360.xacro of livox_laser_simulation_ros2). Gazebo Classic's Livox plugin casts
+                   2000 rays per 1 ms step along the real Mid-360 scan pattern (scan_mode/mid360.csv); Gazebo
+                   Harmonic has no such plugin, so here a gpu_lidar grid of 720 x 28 rays at 10 Hz (201600
+                   points/s, the real sensor's 200000) over the same field of view; min range 0.1 m.
+    RealSense D435 at base_link (0.05, 0, 0), level; depth 120 x 90, 85.2 deg horizontal, 0.1 .. 10 m, 30 Hz
+                   (urdf/_d435.gazebo.xacro, depth_camera_depth_max 10 of config/sando.yaml).
+-->
+<sdf version="1.9">
+  <model name="x500_mid360_d435_tw2">
+    <!-- PX4 x500 with motorConstant 1.1842e-05 instead of 8.5486e-06 (x1.385): 4 x 11.84 N for 2.414 kg, thrust-to-weight 2 (x500: 1.44); tools/make_oakd_x2.py --tw -->
+    <include merge="true">
+      <uri>model://x500_base</uri>
+    </include>
+    <plugin filename="gz-sim-multicopter-motor-model-system"
+      name="gz::sim::systems::MulticopterMotorModel">
+      <jointName>rotor_0_joint</jointName>
+      <linkName>rotor_0</linkName>
+      <turningDirection>ccw</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>1000.0</maxRotVelocity>
+      <motorConstant>1.184218e-05</motorConstant>
+      <momentConstant>0.016</momentConstant>
+      <commandSubTopic>command/motor_speed</commandSubTopic>
+      <motorNumber>0</motorNumber>
+      <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      <motorType>velocity</motorType>
+    </plugin>
+    <plugin filename="gz-sim-multicopter-motor-model-system"
+      name="gz::sim::systems::MulticopterMotorModel">
+      <jointName>rotor_1_joint</jointName>
+      <linkName>rotor_1</linkName>
+      <turningDirection>ccw</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>1000.0</maxRotVelocity>
+      <motorConstant>1.184218e-05</motorConstant>
+      <momentConstant>0.016</momentConstant>
+      <commandSubTopic>command/motor_speed</commandSubTopic>
+      <motorNumber>1</motorNumber>
+      <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      <motorType>velocity</motorType>
+    </plugin>
+    <plugin filename="gz-sim-multicopter-motor-model-system"
+      name="gz::sim::systems::MulticopterMotorModel">
+      <jointName>rotor_2_joint</jointName>
+      <linkName>rotor_2</linkName>
+      <turningDirection>cw</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>1000.0</maxRotVelocity>
+      <motorConstant>1.184218e-05</motorConstant>
+      <momentConstant>0.016</momentConstant>
+      <commandSubTopic>command/motor_speed</commandSubTopic>
+      <motorNumber>2</motorNumber>
+      <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      <motorType>velocity</motorType>
+    </plugin>
+    <plugin filename="gz-sim-multicopter-motor-model-system"
+      name="gz::sim::systems::MulticopterMotorModel">
+      <jointName>rotor_3_joint</jointName>
+      <linkName>rotor_3</linkName>
+      <turningDirection>cw</turningDirection>
+      <timeConstantUp>0.0125</timeConstantUp>
+      <timeConstantDown>0.025</timeConstantDown>
+      <maxRotVelocity>1000.0</maxRotVelocity>
+      <motorConstant>1.184218e-05</motorConstant>
+      <momentConstant>0.016</momentConstant>
+      <commandSubTopic>command/motor_speed</commandSubTopic>
+      <motorNumber>3</motorNumber>
+      <rotorDragCoefficient>8.06428e-05</rotorDragCoefficient>
+      <rollingMomentCoefficient>1e-06</rollingMomentCoefficient>
+      <rotorVelocitySlowdownSim>10</rotorVelocitySlowdownSim>
+      <motorType>velocity</motorType>
+    </plugin>
+    <plugin filename="MotorFailurePlugin"
+      name="gz::sim::systems::MotorFailureSystem">
+    </plugin>
+
+    <link name="mid360_link">
+      <pose relative_to="__model__">0 0 0.2 0 0.3 0</pose>
+      <inertial><mass>0.04</mass>
+        <inertia><ixx>1e-5</ixx><iyy>1e-5</iyy><izz>1e-5</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      <visual name="mid360_visual">
+        <geometry><cylinder><radius>0.033</radius><length>0.06</length></cylinder></geometry>
+        <material><ambient>0.2 0.2 0.2 1</ambient><diffuse>0.2 0.2 0.2 1</diffuse></material>
+      </visual>
+      <sensor name="mid360" type="gpu_lidar">
+        <always_on>1</always_on>
+        <update_rate>10</update_rate>
+        <visualize>false</visualize>
+        <topic>/sando/mid360</topic>
+        <gz_frame_id>NX01/NX01_livox</gz_frame_id>
+        <lidar>
+          <scan>
+            <horizontal><samples>720</samples><resolution>1</resolution><min_angle>-3.14159265</min_angle><max_angle>3.13286601</max_angle></horizontal>
+            <vertical><samples>28</samples><resolution>1</resolution><min_angle>-0.12601277</min_angle><max_angle>0.96377081</max_angle></vertical>
+          </scan>
+          <range><min>0.1</min><max>20.0</max><resolution>0.01</resolution></range>
+        </lidar>
+      </sensor>
+    </link>
+    <joint name="mid360_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>mid360_link</child>
+    </joint>
+    <link name="d435_link">
+      <pose relative_to="__model__">0.05 0 0 0 0 0</pose>
+      <inertial><mass>0.07</mass>
+        <inertia><ixx>1e-5</ixx><iyy>1e-5</iyy><izz>1e-5</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
+      <visual name="d435_visual">
+        <geometry><box><size>0.025 0.09 0.025</size></box></geometry>
+        <material><ambient>0.6 0.6 0.6 1</ambient><diffuse>0.6 0.6 0.6 1</diffuse></material>
+      </visual>
+      <sensor name="d435_depth" type="depth_camera">
+        <always_on>1</always_on>
+        <update_rate>30</update_rate>
+        <visualize>false</visualize>
+        <topic>/sando/d435/depth</topic>
+        <gz_frame_id>NX01/NX01_d435_link</gz_frame_id>
+        <camera name="d435">
+          <horizontal_fov>1.48702</horizontal_fov>
+          <image><width>120</width><height>90</height><format>R_FLOAT32</format></image>
+          <clip><near>0.1</near><far>10.0</far></clip>
+        </camera>
+      </sensor>
+    </link>
+    <joint name="d435_joint" type="fixed">
+      <parent>base_link</parent>
+      <child>d435_link</child>
+    </joint>
+
+    <!-- ground truth for data collection (never used by the deployed policy) -->
+    <plugin filename="gz-sim-odometry-publisher-system" name="gz::sim::systems::OdometryPublisher">
+      <dimensions>3</dimensions>
+      <odom_publish_frequency>100</odom_publish_frequency>
+      <odom_frame>world</odom_frame>
+      <robot_base_frame>x500_mid360_d435_tw2_0</robot_base_frame>
+    </plugin>
+  </model>
+</sdf>
