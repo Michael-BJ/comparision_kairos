@@ -2,7 +2,7 @@
 
 How KAIROS and the comparison methods are flown in Gazebo, and which settings must stay the same so the results can be compared. Anything a method changes from this file is written next to its result.
 
-Last checked: 2026-11-02.
+Last checked: 2026-11-04.
 
 ## 1. Principle
 
@@ -66,9 +66,11 @@ A method whose original timing differs (for example NEO: replan 1.0 s, plan 1.0 
 |---|---|
 | `dyn_long200_smooth_021_clear2` | first test world, smooth (sinusoidal) sphere motions |
 | `dyn_long200_mix_021_clear2` | second test world, mixed sphere motions |
+| `dyn_long200_smooth_021_clear2_static` | static-only control: `dyn_long200_smooth_021_clear2` with all 61 spheres removed (`tools/drop_kinds.py ... line loop --suffix _static`); the same 100 static elements, route, spawn and bounds. Separates static-avoidance failures from dynamic ones. |
 | one long200 world not used before | final numbers, chosen before any method is flown on it |
+| `dyn_sando_easy` / `_medium` / `_hard` (+ `_static`) | difficulty ladder derived from SANDO's benchmark layout (105 / 105 / 150 m, bricks, gaps >= 1.75 m, training-world motions, hand-edited); how they were made, tools and first 2-episode runs: `sando_worlds/README.md` |
 
-**All results so far (2026-11-03) were flown in `dyn_long200_smooth_021_clear2` only.** `dyn_long200_mix_021_clear2` and the final world have not been flown by any method yet; every number in this file is for the smooth world.
+**All results so far (2026-11-03) were flown in `dyn_long200_smooth_021_clear2` only.** `dyn_long200_mix_021_clear2` and the final world have not been flown by any method yet; every number in this file is for the smooth world. The `dyn_sando_*` worlds have 2-pass checks only (2026-11-04, `sando_worlds/README.md`); how to measure them: section 3.
 
 The worlds are not used for training. The training data is `~/dynamic_39_world_1nov_exc3` (39 `*_mix` worlds).
 
@@ -124,6 +126,71 @@ Results land in `~/kairos_test/20261102_compare`: `logs/<NAME>/`, `runs/<NAME>/<
 
 A run is invalid if `test.log` shows `left OFFBOARD` or a traceback; the script prints a warning.
 
+### Measuring on the SANDO-based worlds (easy / medium / hard)
+
+Six worlds, each flown by every method: the static + dynamic world and its static-only control.
+
+| World | Static-only control | Course | Time limit per pass | Statics | Spheres |
+|---|---|---|---|---|---|
+| `dyn_sando_easy` | `dyn_sando_easy_static` | (0, 0) -> (105, 0), 105 m | 290 s | 18 | 10 |
+| `dyn_sando_medium` | `dyn_sando_medium_static` | (0, 0) -> (105, 0), 105 m | 290 s | 26 | 24 |
+| `dyn_sando_hard` | `dyn_sando_hard_static` | (0, 0) -> (150, 0), 150 m | 410 s | 35 | 39 |
+
+Everything in section 2 applies, except the course: pad A at x 0, pad B at x 105 (hard: 150), so a pass is
+105 m (hard 150 m) instead of ~200 m. Passes alternate A -> B and B -> A; **24 passes per world** for the final
+table (2 for a quick check, stated as such). How the worlds were made, their known deviations (a few sphere paths
+closer than 1.75 m to a static after the hand edits; open edge lanes at y 6-8 m) and the tools:
+`sando_worlds/README.md`.
+
+**Before a measurement**
+
+1. The worlds are frozen. Check that the installed files are the measured ones:
+   `cd ~/Dynamic_obstacle/install/dyn_gz_worlds/share/dyn_gz_worlds && md5sum -c ~/comparision_for_kairos/sando_worlds/worlds/CHECKSUMS.md5`
+   (all `OK`). After any change to a world, every run in it is flown again: a run is counted against the world it
+   was flown in.
+2. No other Gazebo, training or GPU job runs (section 2). The scripts stop any running stack, including a Gazebo
+   window opened with `show_world.sh`.
+3. To look at a world first: `~/Dynamic_obstacle/show_world.sh dyn_sando_medium` (Gazebo only; close it before a run).
+
+**Flying a method on all six worlds** (`sando_worlds/tools/run_worlds.sh <method> <passes> [worlds]`: runs the
+method's own `run.sh` once per world, then `hits.py` for each run):
+
+```bash
+cd ~/comparision_for_kairos/sando_worlds/tools
+W="dyn_sando_easy_static dyn_sando_medium_static dyn_sando_hard_static dyn_sando_easy dyn_sando_medium dyn_sando_hard"
+./run_worlds.sh kairos 24 $W            # KAIROS+MIGHTY          -> KAIROS_<world>_24ep
+./run_worlds.sh sando 24 $W             # SANDO (own sensors: Mid-360)
+./run_worlds.sh sando_d435 24 $W        # SANDO with its Table VII sensor (D435), optional
+./run_worlds.sh neo 24 $W               # NEO-Planner            (NEO_MODEL=... to change the checkpoint)
+./run_worlds.sh neo_regression 24 $W    # NEO-style regression
+./run_worlds.sh agile 24 $W             # Agile Autonomy         (AGILE_MODEL=... to change the checkpoint)
+```
+
+The same run by hand, one world (here KAIROS+MIGHTY in `dyn_sando_hard`):
+
+```bash
+cd ~/kairos_test/20261102_compare
+NAME=KAIROS_dyn_sando_hard_24ep EPISODES=24 WORLD=dyn_sando_hard ./run.sh
+source ~/inference_kairos/install/setup.bash
+python3 hits.py KAIROS_dyn_sando_hard_24ep dyn_sando_hard
+```
+
+For the other methods replace the first two lines with the method's script from the list above (e.g.
+`cd ~/comparision_for_kairos/SANDO_planner && NAME=SANDO_dyn_sando_hard_24ep EPISODES=24 WORLD=dyn_sando_hard ./run.sh`).
+SANDO is flown with `run.sh`; `run_restart.sh` (restart after a permanent deadlock) is a variant reported next to it
+and only needed if SANDO deadlocks (it did not in the 2-pass checks). MIGHTY, EGO-Planner and NavRL have no run
+script yet (section 4).
+
+**Run names** are `<METHOD>_<world>_<passes>ep` (add a suffix such as `_v2` for a repeat: `SUFFIX=_v2 ./run_worlds.sh ...`).
+Results: `~/kairos_test/20261102_compare/logs/<NAME>/`, `runs/<NAME>/`, `odom_<NAME>.npz`, as above.
+
+**Duration** (one method, 24 passes): about 35 min per 105 m world for KAIROS (~75 s per pass) and 45 min for SANDO
+(~90-115 s), 45-60 min for hard; about 4-5 h for the six worlds.
+
+**Reporting.** Per world and method, the metrics of section 2 (SR, CR, reached, static / dynamic hits, distance, mean
+speed, planning time), the static-only control next to the static + dynamic world. First 2-pass checks (KAIROS+MIGHTY
+6/6 without a collision; SANDO 2/6, its contacts growing with density): `sando_worlds/README.md`, "Results so far".
+
 ## 4. Per-method settings
 
 ### KAIROS+MIGHTY (`kairos_planner`, `mode:=kairos_mighty`)
@@ -157,7 +224,7 @@ PlannerNet + 2D MINCO on an octomap ESDF, trained on the KAIROS dataset with the
 
 ### SANDO, original sensors (`SANDO_planner/run.sh`)
 
-The one exception to "Inputs the planner may use" (section 2): SANDO flies with its own sensors, a Livox Mid-360 (360 deg lidar, 20 m, to its ACL mapper) and a RealSense D435 (to its obstacle tracker), on the same x500 tw2 airframe (`SANDO_planner/models/x500_mid360_d435_tw2`). Everything else is as above: PX4 odometry, `trajectory_server`, v_max / a_max / j_max, mission, worlds, referee. No ground truth (`use_global_pc: false`, no obstacle trajectories). Report it as "SANDO (original sensors: Mid-360 + D435)": it sees more than the other methods. Its other changes (Jazzy patches, yaw, obstacle speed bound 2.0 m/s, drone size) are listed in `SANDO_planner/README.md`.
+The one exception to "Inputs the planner may use" (section 2): SANDO flies with its own sensor and perception pipeline, as in its hardware experiments: a Livox Mid-360 (360 deg lidar, 20 m) to its ACL mapper, whose temporal grid and tracker give the dynamic obstacles. The model (`SANDO_planner/models/x500_mid360_d435_tw2`, same x500 tw2 airframe) also carries the D435 of SANDO's URDF, which SANDO uses only in its perception-only simulation; it is not used here. Further exceptions: SANDO's own timing (replans as fast as it can, from its committed plan), its own yaw (`goal.yaw`, including its spin after repeated failed replans), and its 100 Hz setpoint stream executed through `trajectory_server`. Everything else is as above: PX4 odometry, v_max / a_max / j_max (as norms), mission, worlds, referee. No ground truth (`use_global_pc: false`, no obstacle trajectories). Report it as "SANDO (own sensors: Mid-360)": it sees more than the other methods. The diagnosis of its first runs, the integration fixes and its tuning for this vehicle and world (all without changes to its code) are in `SANDO_planner/README.md`. Its runs before `SANDO_v3` (`SANDO`, `SANDO_Linf`, `SANDO_v2`) are not results: the package's drone model had the Mid-360 inside the airframe (sensor poses taken from the model origin, 0.24 m below the x500's base_link), so SANDO mapped the drone itself as an obstacle; the lidar's returns on the airframe (the x500's propeller tips at its lowest rays) are now dropped as on a real drone.
 
 ### Methods still to be added (MIGHTY, EGO-Planner, NavRL)
 
@@ -179,7 +246,7 @@ Each new method:
 - Tuning a method on the test worlds.
 - Reading hits from `trajectories.png` titles instead of `hits.py` or `summary.json`.
 
-## 6. Status, 2026-11-03
+## 6. Status, 2026-11-04
 
 | Method | World | Passes | Reached | Static | Dynamic | Note |
 |---|---|---|---|---|---|---|
@@ -188,6 +255,10 @@ Each new method:
 | KAIROS+MIGHTY, `runs/1nov_mix/B` (old) | smooth clear2 | 12 | 12 | 0 | 0 | headless |
 | NEO-style regression | - | - | - | - | - | not flown |
 | NEO-Planner | smooth clear2 | 24 | 22 | 4 | 146 | window open; SR 0/24; 6212 m, 0.67 m/s, plan median 15 ms |
+| SANDO (own sensors: Mid-360), `SANDO_v3` | smooth clear2 | 24 | 4 | 6 | 9 | window open; SR 1/24; from pass 5 it hovered without a plan (deadlock, no recovery), passes 6-24 are follow-ons; 1178 m; passes 1-4 1.04 m/s; plan median 56 ms |
+| SANDO, `SANDO_v3R` (stack restarted after a deadlock) | smooth clear2 | 24 | 20 | 31 | 91 | variant for SANDO only (`SANDO_planner/run_restart.sh`); SR 0/24; deadlocks in passes 10 and 23; 4868 m; reached passes 1.05 m/s; plan median 56 ms |
+| SANDO, `SANDO_v3R_omv1` (as `SANDO_v3R`, `obst_max_vel` 1.0) | smooth clear2 | 24 | 20 | 27 | 122 | sensitivity to SANDO's obstacle speed bound (0.5 m/s, its simulation default; 1.0 = its paper's simulations); SR 0/24; deadlocks in passes 8 and 17; 5082 m; reached passes 0.89 m/s; 5.55 dynamic contacts per reached pass against 4.35 with 0.5 |
+| SANDO, `SANDO_v2` (invalid) | smooth clear2 | 24 | 14 | 65 | 126 | the drone model's lidar mapped the drone itself (`SANDO_planner/README.md`) |
 
 Details: `~/kairos_test/20261102_compare/results.md`.
 
@@ -195,22 +266,24 @@ Details: `~/kairos_test/20261102_compare/results.md`.
 
 All values are for the smooth world only (see Worlds). Window open, same machine.
 
-| Metric | KAIROS+MIGHTY (`runs/2nov_exc3/B`) | NEO-Planner |
-|---|---|---|
-| SR (reached, no collision) | 22/24 | 0/24 |
-| CR (passes with a collision) | 2/24 | 24/24 |
-| Reached | 24/24 | 22/24 (2 timeouts, passes 1 and 22) |
-| Static hits (per 100 m) | 2 (0.04) | 4 (0.06) |
-| Dynamic hits (per 100 m) | 0 | 142 (2.29) |
-| Distance | 5071 m | 6205 m |
-| Mean speed | 1.45 m/s | 0.66 m/s |
-| Planning time, median / p90 | 223 / 279 ms | 15 / 58 ms |
-| Late plans | not computed | 827 of 32352 replans |
-| Closest approach to a static | not computed | not computed |
+| Metric | KAIROS+MIGHTY (`runs/2nov_exc3/B`) | NEO-Planner | SANDO (own sensors: Mid-360), `SANDO_v3` |
+|---|---|---|---|
+| SR (reached, no collision) | 22/24 | 0/24 | 1/24 |
+| CR (passes with a collision) | 2/24 | 24/24 | 23/24 |
+| Reached | 24/24 | 22/24 (2 timeouts, passes 1 and 22) | 4/24 (deadlock in pass 5, passes 6-24 its follow-ons) |
+| Static hits (per 100 m) | 2 (0.04) | 4 (0.06) | 6 (0.51) |
+| Dynamic hits (per 100 m) | 0 | 142 (2.29) | 9 (0.77) |
+| Distance | 5071 m | 6205 m | 1174 m |
+| Mean speed | 1.45 m/s | 0.66 m/s | 0.43 m/s (passes 1-4: 1.04 m/s) |
+| Planning time, median / p90 | 223 / 279 ms | 15 / 58 ms | 56 / 104 ms |
+| Late plans | not computed | 827 of 32352 replans | not applicable (replans continuously; 20 % of 43775 replans succeeded) |
+| Closest approach to a static | not computed | not computed | -0.15 m |
+
+SANDO with a stack restart after a deadlock (`SANDO_v3R`, a variant for SANDO only: it has no recovery from a hover point outside every corridor, so in `SANDO_v3` one deadlock in pass 5 ended the run): SR 0/24, CR 22/24, reached 20/24, static 31 (0.64 per 100 m), dynamic 90 (1.85 per 100 m), 4857 m, 0.81 m/s (reached passes 1.05 m/s), planning 56 / 104 ms, closest approach to a static -0.03 m. The same with `obst_max_vel` 1.0, the bound of SANDO's paper simulations, instead of 0.5 (`SANDO_v3R_omv1`): SR 0/24, CR 24/24, reached 20/24, static 27 (0.53 per 100 m), dynamic 121 (2.39 per 100 m), 5069 m, 0.74 m/s (reached passes 0.89 m/s), planning 60 / 116 ms, closest approach -0.13 m: the larger bound covers the obstacles' speeds but neither the success rate nor the dynamic contacts improve. One pass with 2.0, above every obstacle's speed: reached, 2 static and 7 dynamic contacts, 4 of them on the hovering drone. Details in `SANDO_planner/README.md`.
 
 How the values are computed:
 
-- **Source.** KAIROS: `runs/KAIROS_MIGHTY_24/<stamp>_.../summary.json` (`episodes[i].collisions`, `travel`, `plan_ms`). NEO: `runs/NEO/<stamp>_.../summary.json` (`episodes[i].hits_static`, `hits_dynamic`, `path`, `duration`, `plan_ms`). The pose-based counts of `hits.py` are the reference; the NEO row of the status table above (146 dynamic hits, 6212 m) comes from it, while the 142 and 6205 m here are summed from `summary.json`. Run `hits.py` and use its numbers for the final table.
+- **Source.** KAIROS: `runs/KAIROS_MIGHTY_24/<stamp>_.../summary.json` (`episodes[i].collisions`, `travel`, `plan_ms`). NEO: `runs/NEO/<stamp>_.../summary.json` (`episodes[i].hits_static`, `hits_dynamic`, `path`, `duration`, `plan_ms`). SANDO: `runs/SANDO_v3/<stamp>_.../summary.json`, same fields as NEO; `plan_ms` is SANDO's `total_replanning_ms` of its successful replans. The pose-based counts of `hits.py` are the reference; the NEO row of the status table above (146 dynamic hits, 6212 m) comes from it, while the 142 and 6205 m here are summed from `summary.json`. Run `hits.py` and use its numbers for the final table.
 - **Reached.** Episodes whose `outcome` is `reached`.
 - **SR.** A pass counts as a success if it is reached and has no collision. A timeout and the short follow-on episode that finishes it are one failed pass (NEO passes 1 and 22 with their follow-ons 2 and 23).
 - **CR.** Passes with at least one static or dynamic hit, divided by 24.

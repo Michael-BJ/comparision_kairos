@@ -1,0 +1,1706 @@
+seed: 0
+generator: sando_dyn_obstacles (from_sando.py)
+bounds:
+  lo:
+  - -2.0
+  - -9.0
+  - 0.0
+  hi:
+  - 152.0
+  - 9.0
+  - 7.0
+spawn:
+- 0.0
+- 0.0
+- 0.0
+route:
+  a:
+  - 0.0
+  - 0.0
+  b:
+  - 150.0
+  - 0.0
+  jitter: 0.0
+  z: 2.0
+  z_band: 1.0
+layout:
+  source: github.com/mit-acl/sando 1a738df, launch/dyn_obstacles.launch.py (rviz_only
+    defaults)
+  case: hard
+  sando_num_obstacles: 200
+  gap: 1.75
+  half_width: 6.0
+  n_static: 35
+  course: 150.0
+  n_arenas: 10
+  field_length: 5.4545
+  static_shape: brick pillars 0.6 x 0.6 m, heights (3.0, 3.3, 3.6, 3.9); brick walls
+    4.0 m long, thickness (0.3, 0.9), heights (1.5, 1.8, 2.1); gap >= 1.75 m, at SANDO's
+    x, y
+  static_obstacles: true
+  n_dynamic: 30
+  dynamic_shape: sphere r 0.5
+  motion: SANDO's trefoils, no spacing guarantee
+static:
+- type: box
+  kind: brick
+  center:
+  - 117.248
+  - -5.2701
+  - 1.5
+  size:
+  - 0.6
+  - 0.6
+  - 3.0
+  yaw: 0.0
+  layers: 10
+  group: sando_pillar_130
+  sando:
+    kind: pillar
+    xy:
+    - 81.3919
+    - -3.2604
+- type: box
+  kind: brick
+  center:
+  - 76.7457
+  - 5.2963
+  - 1.8
+  size:
+  - 0.6
+  - 0.6
+  - 3.6
+  yaw: 0.0
+  layers: 12
+  group: sando_pillar_131
+  sando:
+    kind: pillar
+    xy:
+    - 55.264
+    - 5.2963
+- type: box
+  kind: brick
+  center:
+  - 90.8545
+  - 1.5338
+  - 1.5
+  size:
+  - 0.6
+  - 0.6
+  - 3.0
+  yaw: 0.0
+  layers: 10
+  group: sando_pillar_132
+  sando:
+    kind: pillar
+    xy:
+    - 64.9363
+    - 1.5338
+- type: box
+  kind: brick
+  center:
+  - 61.9784
+  - 4.3341
+  - 1.8
+  size:
+  - 0.6
+  - 0.6
+  - 3.6
+  yaw: 0.0
+  layers: 12
+  group: sando_pillar_133
+  sando:
+    kind: pillar
+    xy:
+    - 74.4373
+    - -3.0097
+- type: box
+  kind: brick
+  center:
+  - 3.9761
+  - -0.6218
+  - 1.5
+  size:
+  - 0.6
+  - 0.6
+  - 3.0
+  yaw: 0.0
+  layers: 10
+  group: sando_pillar_135
+  sando:
+    kind: pillar
+    xy:
+    - 12.4028
+    - -0.6218
+- type: box
+  kind: brick
+  center:
+  - 63.9727
+  - 0.611
+  - 1.65
+  size:
+  - 0.6
+  - 0.6
+  - 3.3
+  yaw: 0.0
+  layers: 11
+  group: sando_pillar_136
+  sando:
+    kind: pillar
+    xy:
+    - 47.7171
+    - 0.1068
+- type: box
+  kind: brick
+  center:
+  - 103.2995
+  - 5.4961
+  - 1.8
+  size:
+  - 0.6
+  - 0.6
+  - 3.6
+  yaw: 0.0
+  layers: 12
+  group: sando_pillar_137
+  sando:
+    kind: pillar
+    xy:
+    - 71.9743
+    - 5.4961
+- type: box
+  kind: brick
+  center:
+  - 140.4136
+  - 5.1358
+  - 1.65
+  size:
+  - 0.6
+  - 0.6
+  - 3.3
+  yaw: 0.0
+  layers: 11
+  group: sando_pillar_138
+  sando:
+    kind: pillar
+    xy:
+    - 92.7381
+    - 5.1358
+- type: box
+  kind: brick
+  center:
+  - 141.423
+  - -5.1029
+  - 1.8
+  size:
+  - 0.6
+  - 0.6
+  - 3.6
+  yaw: 0.0
+  layers: 12
+  group: sando_pillar_139
+  sando:
+    kind: pillar
+    xy:
+    - 94.3371
+    - -2.9678
+- type: box
+  kind: brick
+  center:
+  - 115.409
+  - 2.7935
+  - 1.8
+  size:
+  - 0.6
+  - 0.6
+  - 3.6
+  yaw: 0.0
+  layers: 12
+  group: sando_pillar_140
+  sando:
+    kind: pillar
+    xy:
+    - 78.4805
+    - 1.3163
+- type: box
+  kind: brick
+  center:
+  - 4.3316
+  - -5.8684
+  - 1.65
+  size:
+  - 0.6
+  - 0.6
+  - 3.3
+  yaw: 0.0
+  layers: 11
+  group: sando_pillar_141
+  sando:
+    kind: pillar
+    xy:
+    - 7.8628
+    - -5.8684
+- type: box
+  kind: brick
+  center:
+  - 114.848
+  - -2.4789
+  - 1.65
+  size:
+  - 0.6
+  - 0.6
+  - 3.3
+  yaw: 0.0
+  layers: 11
+  group: sando_pillar_142
+  sando:
+    kind: pillar
+    xy:
+    - 77.4235
+    - -1.3605
+- type: box
+  kind: brick
+  center:
+  - 90.5386
+  - -1.3289
+  - 1.95
+  size:
+  - 0.6
+  - 0.6
+  - 3.9
+  yaw: 0.0
+  layers: 13
+  group: sando_pillar_143
+  sando:
+    kind: pillar
+    xy:
+    - 64.436
+    - -1.3289
+- type: box
+  kind: brick
+  center:
+  - 20.6088
+  - 2.5259
+  - 1.65
+  size:
+  - 0.6
+  - 0.6
+  - 3.3
+  yaw: 0.0
+  layers: 11
+  group: sando_pillar_145
+  sando:
+    kind: pillar
+    xy:
+    - 17.0473
+    - 2.5259
+- type: box
+  kind: brick
+  center:
+  - 77.4273
+  - -5.4826
+  - 1.5
+  size:
+  - 0.6
+  - 0.6
+  - 3.0
+  yaw: 0.0
+  layers: 10
+  group: sando_pillar_149
+  sando:
+    kind: pillar
+    xy:
+    - 56.3591
+    - -5.4826
+- type: box
+  kind: brick
+  center:
+  - 127.7037
+  - 5.3436
+  - 1.5
+  size:
+  - 0.6
+  - 0.6
+  - 3.0
+  yaw: 0.0
+  layers: 10
+  group: sando_pillar_150
+  sando:
+    kind: pillar
+    xy:
+    - 85.2809
+    - 5.3436
+- type: box
+  kind: brick
+  center:
+  - 131.2455
+  - 5.8117
+  - 1.5
+  size:
+  - 0.6
+  - 0.6
+  - 3.0
+  yaw: 0.0
+  layers: 10
+  group: sando_pillar_151
+  sando:
+    kind: pillar
+    xy:
+    - 91.0004
+    - 5.8117
+- type: box
+  kind: brick
+  center:
+  - 61.2522
+  - -2.3268
+  - 1.8
+  size:
+  - 0.6
+  - 0.6
+  - 3.6
+  yaw: 0.0
+  layers: 12
+  group: sando_pillar_153
+  sando:
+    kind: pillar
+    xy:
+    - 43.3993
+    - -2.3268
+- type: box
+  kind: brick
+  center:
+  - 20.5229
+  - -4.3925
+  - 1.95
+  size:
+  - 0.6
+  - 0.6
+  - 3.9
+  yaw: 0.0
+  layers: 13
+  group: sando_pillar_154
+  sando:
+    kind: pillar
+    xy:
+    - 16.9113
+    - -4.3925
+- type: box
+  kind: brick
+  center:
+  - 99.5136
+  - 3.1688
+  - 0.75
+  size:
+  - 0.3
+  - 4.0
+  - 1.5
+  yaw: 0.0
+  layers: 5
+  group: sando_bar_155
+  sando:
+    kind: bar
+    xy:
+    - 65.9799
+    - 3.1688
+- type: box
+  kind: brick
+  center:
+  - 126.5409
+  - -5.4783
+  - 0.9
+  size:
+  - 0.9
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: sando_bar_156
+  sando:
+    kind: bar
+    xy:
+    - 83.2572
+    - -5.4783
+- type: box
+  kind: brick
+  center:
+  - 113.1974
+  - 3.002
+  - 1.05
+  size:
+  - 0.3
+  - 4.0
+  - 2.1
+  yaw: 0.0
+  layers: 7
+  group: sando_bar_157
+  sando:
+    kind: bar
+    xy:
+    - 75.694
+    - 1.5747
+- type: box
+  kind: brick
+  center:
+  - 86.5878
+  - 3.7596
+  - 0.75
+  size:
+  - 0.3
+  - 4.0
+  - 1.5
+  yaw: 0.0
+  layers: 5
+  group: sando_bar_159
+  sando:
+    kind: bar
+    xy:
+    - 58.1807
+    - 3.7596
+- type: box
+  kind: brick
+  center:
+  - 36.6579
+  - 4.0
+  - 1.05
+  size:
+  - 0.9
+  - 4.0
+  - 2.1
+  yaw: 0.0
+  layers: 7
+  group: sando_bar_160
+  sando:
+    kind: bar
+    xy:
+    - 29.7916
+    - 2.4049
+- type: box
+  kind: brick
+  center:
+  - 34.26
+  - 5.2475
+  - 0.9
+  size:
+  - 0.3
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: sando_bar_161
+  sando:
+    kind: bar
+    xy:
+    - 29.6283
+    - 5.2262
+- type: box
+  kind: brick
+  center:
+  - 5.938
+  - 5.567
+  - 1.05
+  size:
+  - 0.9
+  - 4.0
+  - 2.1
+  yaw: 0.0
+  layers: 7
+  group: sando_bar_164
+  sando:
+    kind: bar
+    xy:
+    - 8.2106
+    - 3.0923
+- type: box
+  kind: brick
+  center:
+  - 10.2488
+  - 3.5136
+  - 0.75
+  size:
+  - 0.3
+  - 4.0
+  - 1.5
+  yaw: 0.0
+  layers: 5
+  group: sando_bar_165
+  sando:
+    kind: bar
+    xy:
+    - 11.8061
+    - 1.7808
+- type: box
+  kind: brick
+  center:
+  - 33.9828
+  - -6.2778
+  - 0.9
+  size:
+  - 0.9
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: sando_bar_166
+  sando:
+    kind: bar
+    xy:
+    - 27.6785
+    - -0.496
+- type: box
+  kind: brick
+  center:
+  - 86.5155
+  - -3.8454
+  - 0.75
+  size:
+  - 0.9
+  - 4.0
+  - 1.5
+  yaw: 0.0
+  layers: 5
+  group: sando_bar_168
+  sando:
+    kind: bar
+    xy:
+    - 57.8124
+    - 0.5213
+- type: box
+  kind: brick
+  center:
+  - 130.183
+  - -4.6979
+  - 1.05
+  size:
+  - 0.9
+  - 4.0
+  - 2.1
+  yaw: 0.0
+  layers: 7
+  group: sando_bar_172
+  sando:
+    kind: bar
+    xy:
+    - 86.8388
+    - -4.5738
+- type: box
+  kind: brick
+  center:
+  - 9.3333
+  - -4.719
+  - 1.05
+  size:
+  - 0.3
+  - 4.0
+  - 2.1
+  yaw: 0.0
+  layers: 7
+  group: sando_bar_175
+  sando:
+    kind: bar
+    xy:
+    - 10.8937
+    - -2.2649
+- type: box
+  kind: brick
+  center:
+  - 129.6079
+  - 1.3301
+  - 0.9
+  size:
+  - 0.3
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: sando_bar_185
+  sando:
+    kind: bar
+    xy:
+    - 87.808
+    - -0.0476
+- type: box
+  kind: brick
+  center:
+  - 143.2443
+  - 0.4307
+  - 0.9
+  size:
+  - 0.3
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: sando_bar_189
+  sando:
+    kind: bar
+    xy:
+    - 95.739
+    - -0.3434
+- type: box
+  kind: brick
+  center:
+  - 140.154
+  - -0.3653
+  - 0.75
+  size:
+  - 0.3
+  - 4.0
+  - 1.5
+  yaw: 0.0
+  layers: 5
+  group: sando_bar_193
+  sando:
+    kind: bar
+    xy:
+    - 92.4826
+    - 1.6814
+- type: box
+  kind: brick
+  center:
+  - 73.975
+  - 4.6548
+  - 0.9
+  size:
+  - 0.3
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: sando_bar_195
+  sando:
+    kind: bar
+    xy:
+    - 50.8771
+    - 4.6548
+name: dyn_sando_hard_trefoil
+dynamic:
+- id: 0
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.093
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 123.2191
+    - 3.0955
+    - 2.1823
+    scale:
+    - 0.4196
+    - 0.6045
+    - 1.4049
+    omega: 0.217079
+    phase: 2.351396
+    phases:
+    - 2.351396
+    - 2.351396
+    - 2.351396
+  sando:
+    name: obstacle_0
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.606625
+    scale_xyz:
+    - 2.5178
+    - 3.0225
+    - 2.8099
+- id: 1
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.2727
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 71.7236
+    - 1.0006
+    - 4.1325
+    scale:
+    - 0.5016
+    - 0.5127
+    - 1.7558
+    omega: 0.222172
+    phase: 1.855107
+    phases:
+    - 1.855107
+    - 1.855107
+    - 1.855107
+  sando:
+    name: obstacle_1
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.501013
+    scale_xyz:
+    - 3.0094
+    - 2.5637
+    - 3.5116
+- id: 2
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.1282
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 132.3645
+    - 5.7934
+    - 3.7409
+    scale:
+    - 0.6341
+    - 0.5241
+    - 1.7298
+    omega: 0.18629
+    phase: 2.696515
+    phases:
+    - 2.696515
+    - 2.696515
+    - 2.696515
+  sando:
+    name: obstacle_2
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.367968
+    scale_xyz:
+    - 3.8043
+    - 2.6203
+    - 3.4597
+- id: 3
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.1713
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 71.1
+    - -4.7916
+    - 2.2367
+    scale:
+    - 0.537
+    - 0.7652
+    - 1.9666
+    omega: 0.174501
+    phase: 1.431029
+    phases:
+    - 1.431029
+    - 1.431029
+    - 1.431029
+  sando:
+    name: obstacle_3
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.73062
+    scale_xyz:
+    - 3.2218
+    - 3.826
+    - 3.9332
+- id: 4
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.9772
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 41.4689
+    - 3.6603
+    - 2.6948
+    scale:
+    - 0.338
+    - 0.6879
+    - 1.3988
+    omega: 0.187396
+    phase: 2.474535
+    phases:
+    - 2.474535
+    - 2.474535
+    - 2.474535
+  sando:
+    name: obstacle_4
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.336306
+    scale_xyz:
+    - 2.0281
+    - 3.4394
+    - 2.7976
+- id: 5
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.1954
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 5.16
+    - -0.0771
+    - 3.9704
+    scale:
+    - 0.4146
+    - 0.5301
+    - 1.8705
+    omega: 0.194741
+    phase: 0.573201
+    phases:
+    - 0.573201
+    - 0.573201
+    - 0.573201
+  sando:
+    name: obstacle_5
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.135021
+    scale_xyz:
+    - 2.4878
+    - 2.6504
+    - 3.7409
+- id: 6
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.7576
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 38.4062
+    - 5.6105
+    - 3.7127
+    scale:
+    - 0.4827
+    - 0.4322
+    - 1.3201
+    omega: 0.170484
+    phase: 1.523822
+    phases:
+    - 1.523822
+    - 1.523822
+    - 1.523822
+  sando:
+    name: obstacle_6
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.865668
+    scale_xyz:
+    - 2.8959
+    - 2.1609
+    - 2.6401
+- id: 7
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.1032
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 20.2681
+    - 0.6152
+    - 3.3262
+    scale:
+    - 0.5158
+    - 0.7258
+    - 1.5403
+    omega: 0.192072
+    phase: 2.891516
+    phases:
+    - 2.891516
+    - 2.891516
+    - 2.891516
+  sando:
+    name: obstacle_7
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.206371
+    scale_xyz:
+    - 3.0949
+    - 3.6289
+    - 3.0806
+- id: 8
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.1109
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 87.2664
+    - -0.6601
+    - 2.8851
+    scale:
+    - 0.4616
+    - 0.6303
+    - 1.2903
+    omega: 0.228652
+    phase: 0.568174
+    phases:
+    - 0.568174
+    - 0.568174
+    - 0.568174
+  sando:
+    name: obstacle_8
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.373459
+    scale_xyz:
+    - 2.7698
+    - 3.1513
+    - 2.5807
+- id: 9
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.1397
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 90.7882
+    - 1.8799
+    - 2.4061
+    scale:
+    - 0.3633
+    - 0.703
+    - 1.8768
+    omega: 0.175904
+    phase: 2.770143
+    phases:
+    - 2.770143
+    - 2.770143
+    - 2.770143
+  sando:
+    name: obstacle_9
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.68492
+    scale_xyz:
+    - 2.1796
+    - 3.5152
+    - 3.7535
+- id: 10
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.8669
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 130.7442
+    - 5.077
+    - 2.6624
+    scale:
+    - 0.4638
+    - 0.6821
+    - 1.2756
+    omega: 0.17547
+    phase: 2.434886
+    phases:
+    - 2.434886
+    - 2.434886
+    - 2.434886
+  sando:
+    name: obstacle_10
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.698972
+    scale_xyz:
+    - 2.7826
+    - 3.4106
+    - 2.5513
+- id: 11
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.9824
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 130.3055
+    - 1.0776
+    - 4.2991
+    scale:
+    - 0.5266
+    - 0.5802
+    - 1.6602
+    omega: 0.171412
+    phase: 2.988774
+    phases:
+    - 2.988774
+    - 2.988774
+    - 2.988774
+  sando:
+    name: obstacle_11
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.833882
+    scale_xyz:
+    - 3.1594
+    - 2.9011
+    - 3.3205
+- id: 12
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.1537
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 116.0655
+    - -5.0115
+    - 2.9511
+    scale:
+    - 0.4955
+    - 0.6521
+    - 1.8451
+    omega: 0.18305
+    phase: 0.729107
+    phases:
+    - 0.729107
+    - 0.729107
+    - 0.729107
+  sando:
+    name: obstacle_12
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.462978
+    scale_xyz:
+    - 2.9729
+    - 3.2603
+    - 3.6902
+- id: 13
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.8719
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 21.3988
+    - -3.3545
+    - 3.6783
+    scale:
+    - 0.4442
+    - 0.7264
+    - 1.1006
+    omega: 0.185345
+    phase: 0.439075
+    phases:
+    - 0.439075
+    - 0.439075
+    - 0.439075
+  sando:
+    name: obstacle_13
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.395341
+    scale_xyz:
+    - 2.6651
+    - 3.6318
+    - 2.2012
+- id: 14
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.8153
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 11.3328
+    - 0.8864
+    - 4.1401
+    scale:
+    - 0.5114
+    - 0.6722
+    - 1.0267
+    omega: 0.19184
+    phase: 1.905
+    phases:
+    - 1.905
+    - 1.905
+    - 1.905
+  sando:
+    name: obstacle_14
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.212677
+    scale_xyz:
+    - 3.0684
+    - 3.3612
+    - 2.0534
+- id: 15
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.0282
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 85.6334
+    - -1.3055
+    - 1.9806
+    scale:
+    - 0.6602
+    - 0.4146
+    - 1.0216
+    omega: 0.228836
+    phase: 2.883094
+    phases:
+    - 2.883094
+    - 2.883094
+    - 2.883094
+  sando:
+    name: obstacle_15
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.369944
+    scale_xyz:
+    - 3.961
+    - 2.0728
+    - 2.0433
+- id: 16
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.1826
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 22.3453
+    - -3.4731
+    - 3.703
+    scale:
+    - 0.6457
+    - 0.4091
+    - 1.4256
+    omega: 0.221247
+    phase: 0.304501
+    phases:
+    - 0.304501
+    - 0.304501
+    - 0.304501
+  sando:
+    name: obstacle_16
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.51984
+    scale_xyz:
+    - 3.8739
+    - 2.0456
+    - 2.8512
+- id: 17
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.7013
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 35.9161
+    - 1.7631
+    - 1.9012
+    scale:
+    - 0.3934
+    - 0.6015
+    - 1.0394
+    omega: 0.167323
+    phase: 0.302764
+    phases:
+    - 0.302764
+    - 0.302764
+    - 0.302764
+  sando:
+    name: obstacle_17
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.97647
+    scale_xyz:
+    - 2.3606
+    - 3.0073
+    - 2.0788
+- id: 18
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.825
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 32.9098
+    - -1.6973
+    - 3.4264
+    scale:
+    - 0.6128
+    - 0.7674
+    - 1.1694
+    omega: 0.168546
+    phase: 2.017922
+    phases:
+    - 2.017922
+    - 2.017922
+    - 2.017922
+  sando:
+    name: obstacle_18
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.933098
+    scale_xyz:
+    - 3.6767
+    - 3.837
+    - 2.3388
+- id: 19
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.2084
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 13.1271
+    - 2.1144
+    - 3.8817
+    scale:
+    - 0.4474
+    - 0.5003
+    - 1.5968
+    omega: 0.229904
+    phase: 1.326942
+    phases:
+    - 1.326942
+    - 1.326942
+    - 1.326942
+  sando:
+    name: obstacle_19
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.349639
+    scale_xyz:
+    - 2.6846
+    - 2.5014
+    - 3.1936
+- id: 20
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.0644
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 71.0276
+    - -1.0811
+    - 2.7765
+    scale:
+    - 0.5029
+    - 0.5246
+    - 1.3572
+    omega: 0.22213
+    phase: 2.512984
+    phases:
+    - 2.512984
+    - 2.512984
+    - 2.512984
+  sando:
+    name: obstacle_20
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.501865
+    scale_xyz:
+    - 3.0172
+    - 2.6229
+    - 2.7143
+- id: 21
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.7447
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 83.484
+    - -5.8508
+    - 3.4663
+    scale:
+    - 0.4453
+    - 0.4183
+    - 1.2809
+    omega: 0.169312
+    phase: 0.720391
+    phases:
+    - 0.720391
+    - 0.720391
+    - 0.720391
+  sando:
+    name: obstacle_21
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.906259
+    scale_xyz:
+    - 2.6718
+    - 2.0914
+    - 2.5618
+- id: 22
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.1998
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 54.3116
+    - -2.5455
+    - 1.9368
+    scale:
+    - 0.649
+    - 0.6535
+    - 1.6211
+    omega: 0.209379
+    phase: 2.146858
+    phases:
+    - 2.146858
+    - 2.146858
+    - 2.146858
+  sando:
+    name: obstacle_22
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.776034
+    scale_xyz:
+    - 3.8938
+    - 3.2675
+    - 3.2422
+- id: 23
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.921
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 63.0185
+    - 1.81
+    - 0.5061
+    scale:
+    - 0.3974
+    - 0.5338
+    - 1.2394
+    omega: 0.210203
+    phase: 1.912198
+    phases:
+    - 1.912198
+    - 1.912198
+    - 1.912198
+  sando:
+    name: obstacle_23
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.757296
+    scale_xyz:
+    - 2.3846
+    - 2.6688
+    - 2.4788
+- id: 24
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.268
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 127.5593
+    - 0.8178
+    - 2.1576
+    scale:
+    - 0.4674
+    - 0.6807
+    - 1.4182
+    omega: 0.244286
+    phase: 1.986588
+    phases:
+    - 1.986588
+    - 1.986588
+    - 1.986588
+  sando:
+    name: obstacle_24
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.093559
+    scale_xyz:
+    - 2.8045
+    - 3.4037
+    - 2.8365
+- id: 25
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.9414
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 67.3493
+    - -2.8893
+    - 1.1307
+    scale:
+    - 0.5092
+    - 0.5949
+    - 1.5614
+    omega: 0.173378
+    phase: 2.266454
+    phases:
+    - 2.266454
+    - 2.266454
+    - 2.266454
+  sando:
+    name: obstacle_25
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.76775
+    scale_xyz:
+    - 3.0551
+    - 2.9745
+    - 3.1228
+- id: 26
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.081
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 74.2416
+    - -2.2553
+    - 2.3676
+    scale:
+    - 0.603
+    - 0.75
+    - 1.8124
+    omega: 0.166699
+    phase: 0.564004
+    phases:
+    - 0.564004
+    - 0.564004
+    - 0.564004
+  sando:
+    name: obstacle_26
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.998841
+    scale_xyz:
+    - 3.6181
+    - 3.75
+    - 3.6248
+- id: 27
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 1.3345
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 93.6324
+    - -4.9984
+    - 3.4022
+    scale:
+    - 0.6623
+    - 0.5607
+    - 1.6785
+    omega: 0.225884
+    phase: 0.948531
+    phases:
+    - 0.948531
+    - 0.948531
+    - 0.948531
+  sando:
+    name: obstacle_27
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.427049
+    scale_xyz:
+    - 3.9736
+    - 2.8036
+    - 3.357
+- id: 28
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.7067
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 105.4254
+    - -5.9717
+    - 3.7909
+    scale:
+    - 0.5094
+    - 0.4391
+    - 1.1189
+    omega: 0.173995
+    phase: 1.947796
+    phases:
+    - 1.947796
+    - 1.947796
+    - 1.947796
+  sando:
+    name: obstacle_28
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 5.747308
+    scale_xyz:
+    - 3.0567
+    - 2.1956
+    - 2.2378
+- id: 29
+  shape: sphere
+  radius: 0.5
+  height: 0.0
+  speed: 0.893
+  kind: trefoil
+  vertical: true
+  motion:
+    type: trefoil
+    center:
+    - 44.1976
+    - 5.7422
+    - 0.9007
+    scale:
+    - 0.618
+    - 0.5587
+    - 1.0813
+    omega: 0.203834
+    phase: 0.824142
+    phases:
+    - 0.824142
+    - 0.824142
+    - 0.824142
+  sando:
+    name: obstacle_29
+    bbox:
+    - 0.8
+    - 0.8
+    - 0.8
+    slower: 4.905956
+    scale_xyz:
+    - 3.7079
+    - 2.7934
+    - 2.1627
+edits:
+- '2026-11-04 user edit in Gazebo: deleted [''static_004'', ''static_014'', ''static_016'',
+  ''static_017'', ''static_018'', ''static_022'', ''static_028'', ''static_032'',
+  ''static_037'', ''static_040'', ''static_041''], moved [''static_000'', ''static_003'',
+  ''static_005'', ''static_006'', ''static_009'', ''static_010'', ''static_011'',
+  ''static_012'', ''static_030'', ''static_035'', ''static_036'', ''static_038'',
+  ''static_044'']'
+- '2026-11-04 (user): static_023 (the 0.9 x 4 x 2.1 m wall at x 36.66 across the route
+  centre, y -2.21..1.79, which pushed both KAIROS passes to the left) moved to y centre
+  4.0 (y 2.00..6.00), gap rules kept'

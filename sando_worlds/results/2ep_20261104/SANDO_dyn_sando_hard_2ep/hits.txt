@@ -1,0 +1,1 @@
+SANDO_dyn_sando_hard_2ep: 5.2 min, 322 m, static 1, dynamic 3

@@ -1,0 +1,83 @@
+{
+ "run_name": "SANDO_dyn_sando_hard_2ep",
+ "config": {
+  "namespace": "NX01",
+  "timeout_factor": 4.0,
+  "goal_reach_tol": 0.6,
+  "collision_radius": 0.35,
+  "config_file": "/home/michael/kairos_test/20261102_compare/config/expert_m4.yaml",
+  "scenario": "dyn_sando_hard",
+  "execute": "goal",
+  "sensors": "mapper mid360, extra tracker none",
+  "stop_if_stuck": false
+ },
+ "episodes": [
+  {
+   "episode": 1,
+   "outcome": "reached",
+   "duration": 143.96699999999998,
+   "path": 160.9222459367061,
+   "mean_speed": 1.117771752809367,
+   "hits_static": 0,
+   "hits_dynamic": 3,
+   "start": [
+    -0.045231422695976034,
+    0.049409290005524575,
+    1.9284409992396832
+   ],
+   "goal": [
+    150.0,
+    0.0,
+    2.0
+   ],
+   "end": [
+    149.4661564942752,
+    -0.2605894753283853,
+    1.966489352392712
+   ],
+   "follow_on": false
+  },
+  {
+   "episode": 2,
+   "outcome": "reached",
+   "duration": 134.631,
+   "path": 157.95793311815174,
+   "mean_speed": 1.173265690057652,
+   "hits_static": 1,
+   "hits_dynamic": 0,
+   "start": [
+    149.39325295825705,
+    -0.19558480645243365,
+    1.9472128860652447
+   ],
+   "goal": [
+    0.0,
+    0.0,
+    2.0
+   ],
+   "end": [
+    0.3654363322316422,
+    -0.4534796230895843,
+    1.897039835932778
+   ],
+   "follow_on": false
+  }
+ ],
+ "stats": {
+  "plans": 3055,
+  "replans": 8451,
+  "replans_ok": 3055
+ },
+ "plan_ms": {
+  "median": 52.00000000000671,
+  "p90": 96.00000000000364
+ },
+ "plan_gap_s": {
+  "median": 0.05200000000002092,
+  "p90": 0.10800000000000409
+ },
+ "traj_horizon_s": {
+  "median": 3.24384871053698,
+  "p10": 2.405004990148535
+ }
+}

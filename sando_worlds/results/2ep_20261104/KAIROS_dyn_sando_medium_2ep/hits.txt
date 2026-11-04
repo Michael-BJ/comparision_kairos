@@ -1,0 +1,1 @@
+KAIROS_dyn_sando_medium_2ep: 3.0 min, 223 m, static 0, dynamic 0

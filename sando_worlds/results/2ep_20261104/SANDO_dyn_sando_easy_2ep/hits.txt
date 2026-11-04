@@ -1,0 +1,1 @@
+SANDO_dyn_sando_easy_2ep: 3.5 min, 220 m, static 0, dynamic 1

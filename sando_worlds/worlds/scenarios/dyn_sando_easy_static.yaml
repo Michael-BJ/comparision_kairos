@@ -1,0 +1,276 @@
+seed: 0
+generator: sando_dyn_obstacles (from_sando.py), edited by the user in Gazebo 2026-11-04
+bounds:
+  lo:
+  - -2.0
+  - -9.0
+  - 0.0
+  hi:
+  - 107.0
+  - 9.0
+  - 7.0
+spawn:
+- 0.0
+- 0.0
+- 0.0
+route:
+  a:
+  - 0.0
+  - 0.0
+  b:
+  - 105.0
+  - 0.0
+  jitter: 0.0
+  z: 2.0
+  z_band: 1.0
+layout:
+  case: easy
+  half_width: 6.0
+  n_static: 18
+  static_obstacles: true
+  note: the from_sando.py easy world of 2026-11-04 20:2x (statics and spheres mixed,
+    gap 1.75 m), 11 statics moved by the user in Gazebo; dynamic motions as loaded
+edits:
+- 'user edit in Gazebo 2026-11-04: moved [''static_002'', ''static_005'', ''static_007'',
+  ''static_008'', ''static_009'', ''static_010'', ''static_011'', ''static_013'',
+  ''static_014'', ''static_015'', ''static_017'']'
+- 'heights varied 2026-11-04 (user): pillars 1.5..3.9 m, walls 1.5..2.1 m, steps of
+  0.3 m (training worlds'' ranges), rng seed 2000'
+- '2026-11-04 (user): pillars back to 4.0 m (13 courses); wall heights stay varied'
+name: dyn_sando_easy_static
+static:
+- type: box
+  kind: brick
+  center:
+  - 76.1678
+  - 2.4159
+  - 2.0
+  size:
+  - 0.6
+  - 0.6
+  - 4.0
+  yaw: 0.0
+  layers: 13
+  group: user_edit_static_000
+- type: box
+  kind: brick
+  center:
+  - 72.674
+  - 4.8325
+  - 2.0
+  size:
+  - 0.6
+  - 0.6
+  - 4.0
+  yaw: 0.0
+  layers: 13
+  group: user_edit_static_001
+- type: box
+  kind: brick
+  center:
+  - 40.3827
+  - -0.3875
+  - 2.0
+  size:
+  - 0.6
+  - 0.6
+  - 4.0
+  yaw: 0.0
+  layers: 13
+  group: user_edit_static_002
+- type: box
+  kind: brick
+  center:
+  - 60.7769
+  - -5.8932
+  - 2.0
+  size:
+  - 0.6
+  - 0.6
+  - 4.0
+  yaw: 0.0
+  layers: 13
+  group: user_edit_static_003
+- type: box
+  kind: brick
+  center:
+  - 36.6738
+  - 3.4755
+  - 2.0
+  size:
+  - 0.6
+  - 0.6
+  - 4.0
+  yaw: 0.0
+  layers: 13
+  group: user_edit_static_004
+- type: box
+  kind: brick
+  center:
+  - 36.915
+  - -4.3876
+  - 2.0
+  size:
+  - 0.6
+  - 0.6
+  - 4.0
+  yaw: 0.0
+  layers: 13
+  group: user_edit_static_005
+- type: box
+  kind: brick
+  center:
+  - 20.5668
+  - 5.783
+  - 2.0
+  size:
+  - 0.6
+  - 0.6
+  - 4.0
+  yaw: 0.0
+  layers: 13
+  group: user_edit_static_006
+- type: box
+  kind: brick
+  center:
+  - 42.7512
+  - 5.9701
+  - 0.9
+  size:
+  - 0.3
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: user_edit_static_007
+- type: box
+  kind: brick
+  center:
+  - 51.6609
+  - -6.701
+  - 0.9
+  size:
+  - 0.9
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: user_edit_static_008
+- type: box
+  kind: brick
+  center:
+  - 25.3068
+  - 0.2766
+  - 0.9
+  size:
+  - 0.3
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: user_edit_static_009
+- type: box
+  kind: brick
+  center:
+  - 46.9656
+  - -3.0056
+  - 0.9
+  size:
+  - 0.9
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: user_edit_static_010
+- type: box
+  kind: brick
+  center:
+  - 16.5379
+  - 4.9039
+  - 0.75
+  size:
+  - 0.3
+  - 4.0
+  - 1.5
+  yaw: 0.0
+  layers: 5
+  group: user_edit_static_011
+- type: box
+  kind: brick
+  center:
+  - 84.8806
+  - 5.7148
+  - 0.9
+  size:
+  - 0.9
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: user_edit_static_012
+- type: box
+  kind: brick
+  center:
+  - 53.986
+  - 4.2044
+  - 1.05
+  size:
+  - 0.3
+  - 4.0
+  - 2.1
+  yaw: 0.0
+  layers: 7
+  group: user_edit_static_013
+- type: box
+  kind: brick
+  center:
+  - 33.4326
+  - -0.2585
+  - 1.05
+  size:
+  - 0.9
+  - 4.0
+  - 2.1
+  yaw: 0.0
+  layers: 7
+  group: user_edit_static_014
+- type: box
+  kind: brick
+  center:
+  - 92.3704
+  - -3.165
+  - 0.9
+  size:
+  - 0.3
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: user_edit_static_015
+- type: box
+  kind: brick
+  center:
+  - 97.5832
+  - 1.6665
+  - 0.75
+  size:
+  - 0.9
+  - 4.0
+  - 1.5
+  yaw: 0.0
+  layers: 5
+  group: user_edit_static_016
+- type: box
+  kind: brick
+  center:
+  - 12.2826
+  - -3.205
+  - 0.9
+  size:
+  - 0.3
+  - 4.0
+  - 1.8
+  yaw: 0.0
+  layers: 6
+  group: user_edit_static_017
+dynamic: []

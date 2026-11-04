@@ -6,12 +6,17 @@ launch/sando_test.launch.py. This node gives it what SANDO's simulator / hardwar
 stack, and executes its plan the way every method in this test is executed:
   * state: odom_topic (/kairos/odom = PX4's estimate in the world frame) -> <ns>/state (dynus_interfaces/State,
     world velocity), and TF map -> <ns>/base_link at the odometry stamp. SANDO's simulation frame "map" is the
-    world frame of the scenario. Sensor frames as SANDO's quadrotor.urdf.xacro: <ns>/<ns>_livox (Mid-360,
-    0 0 0.2, pitch 0.3), <ns>/<ns>_d435_link (D435, 0.05 0 0; the frame Gazebo's depth points are in) and
+    world frame of the scenario. Sensor frames as SANDO's quadrotor.urdf.xacro, on the x500's base_link (0.24 m
+    above the odometry frame = the model origin): <ns>/<ns>_livox (Mid-360, 0 0 0.2, pitch 0.3),
+    <ns>/<ns>_d435_link (D435, 0.05 0 0; the frame Gazebo's depth points are in) and
     <ns>/<ns>_d435_depth_optical_frame.
-  * plan: SANDO's committed trajectory as it shares it (/trajs, DynTraj, own id, cubic pieces in absolute time)
-    -> HermiteTrajectory knots (p, v, a at the piece ends: exact, a cubic is a quintic) -> trajectory_server.
-    SANDO's hardware path streams the 100 Hz setpoints of the same trajectory (`goal`) to the autopilot instead.
+  * plan: execute "goal" (default) = SANDO's own setpoint stream <ns>/goal (p, v, a, j at 100 Hz, popped from its
+    committed plan, what its hardware path streams to PX4) -> every setpoint a 0.2 s HermiteTrajectory (the
+    setpoint extrapolated with its jerk: exact for SANDO's cubic pieces) -> trajectory_server, whose newest
+    t0 <= now is tracked. execute "trajs" = the trajectory SANDO shares with other agents (/trajs, own id, cubic
+    pieces in absolute time -> Hermite knots). /trajs is not always what SANDO flies: appendToPlan() drops a new
+    plan computed after the drone passed its start A but still reports success, so it is published while the
+    plan keeps the old trajectory (E5 2026-11-04: drone 2.6 m from SANDO's own setpoint, then a pole contact).
   * mission and referee as kairos_planner / neo_node: pads A <-> B (term_goal at the route altitude), reached
     within dataset.goal_reach_tol, timeout timeout_factor * distance / v_nominal + 10 s, collisions counted from
     the Gazebo pose (referee_odom_topic), episode continued.
@@ -40,9 +45,13 @@ from dyn_expert.core.hermite import HermiteTrajectory
 from dyn_expert.core.scenario import Scenario
 from dyn_expert.nodes.common import odom_to_state, to_stamp, traj_to_msg
 
-# sensor mounts of SANDO's urdf/quadrotor.urdf.xacro (= models/x500_mid360_d435_tw2)
-LIVOX_XYZ, LIVOX_RPY = (0.0, 0.0, 0.2), (0.0, 0.3, 0.0)
-D435_XYZ = (0.05, 0.0, 0.0)
+# sensor mounts of SANDO's urdf/quadrotor.urdf.xacro on base_link (= models/x500_mid360_d435_tw2), as offsets from
+# the odometry frame <ns>/base_link here, the model origin: x500_base puts its base_link 0.24 m above it
+BASE_LINK_Z = 0.24
+LIVOX_XYZ, LIVOX_RPY = (0.0, 0.0, BASE_LINK_Z + 0.2), (0.0, 0.3, 0.0)
+D435_XYZ = (0.05, 0.0, BASE_LINK_Z)
+SETPOINT_HORIZON = 0.2        # [s] execute goal: each 100 Hz setpoint is sent as a trajectory this long
+STUCK_M = 5.0                 # [m] stop_if_stuck: a timed-out follow-on that got less than this closer to its goal
 
 
 def pwp_to_hermite(pwp):
@@ -89,6 +98,9 @@ class SandoBridge(Node):
         p("world_frame", "world")
         p("map_frame", "map")
         p("timeout_factor", 0.0)
+        p("execute", "goal")                      # goal: SANDO's setpoint stream; trajs: its shared /trajs
+        p("sensors", "")                          # recorded in summary.json (set by the launch file)
+        p("stop_if_stuck", False)                 # end the run when a follow-on times out without progress (run_restart.sh)
         gp = lambda n: self.get_parameter(n).value
 
         self.cfg = load_config(os.path.expanduser(gp("config_file")))
@@ -105,6 +117,10 @@ class SandoBridge(Node):
         self.goal_tol = float(D.goal_reach_tol)
         self.coll_radius = float(D.collision_radius)
         self.max_episodes = int(gp("episodes"))
+        self.stop_if_stuck = bool(gp("stop_if_stuck"))
+        self.execute = gp("execute")
+        if self.execute not in ("goal", "trajs"):
+            raise ValueError(f"execute '{self.execute}': goal or trajs")
 
         self.lock = threading.Lock()
         self.pose = None                          # (t, p, R, v) newest odometry
@@ -123,7 +139,8 @@ class SandoBridge(Node):
         self.run_name = gp("run_name")
         self.config_record = dict(namespace=self.ns, timeout_factor=self.timeout_factor, goal_reach_tol=self.goal_tol,
                                   collision_radius=self.coll_radius, config_file=gp("config_file"),
-                                  scenario=self.scn.name, sensors="Mid-360 (mapper) + D435 (tracker)")
+                                  scenario=self.scn.name, execute=self.execute, sensors=gp("sensors"),
+                                  stop_if_stuck=self.stop_if_stuck)
 
         odom_qos = QoSProfile(depth=100, reliability=ReliabilityPolicy.BEST_EFFORT, history=HistoryPolicy.KEEP_LAST)
         self.create_subscription(Odometry, gp("odom_topic"), self.on_odom, odom_qos)
@@ -199,10 +216,8 @@ class SandoBridge(Node):
         traj = pwp_to_hermite(msg.pwp)
         if traj is None:
             return
-        with self.lock:
-            goal = None if self.episode is None else self.episode["goal"]
-        self.plan_id += 1
-        self.pub_traj.publish(traj_to_msg(traj, HermiteTrajectoryMsg, self.world_frame, self.plan_id, 0, goal))
+        if self.execute == "trajs":
+            self.forward(traj)
         t = self.now_s()
         if self.stats.get("_last_t") is not None:
             self.stats["plan_gap_s"].append(t - self.stats["_last_t"])
@@ -220,8 +235,25 @@ class SandoBridge(Node):
             self.stats["replans_ok"] += 1
             self.stats["replan_ms"].append(float(msg.total_replanning_ms))
 
+    def forward(self, traj):
+        with self.lock:
+            goal = None if self.episode is None else self.episode["goal"]
+        self.plan_id += 1
+        self.pub_traj.publish(traj_to_msg(traj, HermiteTrajectoryMsg, self.world_frame, self.plan_id, 0, goal))
+
     def on_sando_setpoint(self, msg):
-        self.diag["sp"] = np.array([msg.p.x, msg.p.y, msg.p.z])
+        p = np.array([msg.p.x, msg.p.y, msg.p.z])
+        self.diag["sp"] = p
+        if self.execute != "goal" or self.done or not self.ready:
+            return
+        # the setpoint and its constant-jerk continuation over SETPOINT_HORIZON (SANDO's pieces are cubic)
+        v, a, j = (np.array([m.x, m.y, m.z]) for m in (msg.v, msg.a, msg.j))
+        u = SETPOINT_HORIZON
+        P = np.array([p, p + v * u + a * u ** 2 / 2 + j * u ** 3 / 6])
+        V = np.array([v, v + a * u + j * u ** 2 / 2])
+        A = np.array([a, a + j * u])
+        t0 = msg.header.stamp.sec + msg.header.stamp.nanosec * 1e-9
+        self.forward(HermiteTrajectory(P, V, A, np.array([u]), t0))
 
     def check_idle(self, p):
         """Log once per idle period: SANDO sent no plan for 5 s during an episode (diagnostics)."""
@@ -281,15 +313,13 @@ class SandoBridge(Node):
             self.end_episode(t, "timeout", p)
 
     def start_episode(self, t, p):
-        if (self.last_goal is not None and self.last_outcome != "reached"
-                and np.linalg.norm(p - self.last_goal) > 2.0 * self.goal_tol):
-            goal = self.last_goal.copy()
-        else:
-            goal = self.scn.route_goal(self.rng, p)
+        follow_on = (self.last_goal is not None and self.last_outcome != "reached"
+                     and np.linalg.norm(p - self.last_goal) > 2.0 * self.goal_tol)
+        goal = self.last_goal.copy() if follow_on else self.scn.route_goal(self.rng, p)
         goal = np.array([goal[0], goal[1], self.goal_z])
         dist = float(np.linalg.norm(goal - p))
         ep = dict(n=len(self.episodes) + 1, goal=goal, start=p.copy(), t_start=t, path=0.0, last_p=None,
-                  hits_static=0, hits_dynamic=0,
+                  hits_static=0, hits_dynamic=0, follow_on=follow_on,
                   t_limit=t + self.timeout_factor * dist / float(self.cfg.planner.v_nominal) + 10.0)
         with self.lock:
             self.episode = ep
@@ -305,12 +335,20 @@ class SandoBridge(Node):
         self.episodes.append(dict(episode=ep["n"], outcome=outcome, duration=dur, path=ep["path"],
                                   mean_speed=ep["path"] / max(dur, 1e-6), hits_static=ep["hits_static"],
                                   hits_dynamic=ep["hits_dynamic"], start=ep["start"].tolist(),
-                                  goal=ep["goal"].tolist(), end=p.tolist()))
+                                  goal=ep["goal"].tolist(), end=p.tolist(), follow_on=bool(ep["follow_on"])))
         self.last_goal, self.last_outcome = ep["goal"], outcome
         self.get_logger().info(f"[sando] episode {ep['n']} end: {outcome}, {dur:.1f} s, {ep['path']:.0f} m, "
                                f"hits static {ep['hits_static']} dynamic {ep['hits_dynamic']}")
         self.write_summary()
-        if self.max_episodes and len(self.episodes) >= self.max_episodes:
+        # a follow-on that timed out less than STUCK_M closer to its goal: SANDO hovers where no corridor contains its
+        # start and has no recovery; with stop_if_stuck the run ends here and run_restart.sh restarts the stack.
+        # Progress, not path: the hover jitter adds ~2 cm/s of path (SANDO_v3R_omv1 pass 18: 10 m, 0.3 m off its start)
+        gain = float(np.linalg.norm(ep["start"] - ep["goal"]) - np.linalg.norm(p - ep["goal"]))
+        stuck = self.stop_if_stuck and outcome == "timeout" and ep["follow_on"] and gain < STUCK_M
+        if stuck:
+            self.get_logger().warn(f"[sando] stuck: follow-on episode {ep['n']} got {gain:.1f} m closer to its goal, "
+                                   f"run ended")
+        if stuck or (self.max_episodes and len(self.episodes) >= self.max_episodes):
             self.done = True
             oc = {}
             for e in self.episodes:

@@ -1,0 +1,8 @@
+KAIROS_dyn_sando_easy_2ep: 3.0 min, 222 m, static 0, dynamic 0
+KAIROS_dyn_sando_hard_2ep: 4.1 min, 313 m, static 0, dynamic 0
+KAIROS_dyn_sando_hard_2ep_v2: 4.0 min, 310 m, static 0, dynamic 0
+KAIROS_dyn_sando_medium_2ep: 3.0 min, 223 m, static 0, dynamic 0
+SANDO_dyn_sando_easy_2ep: 3.5 min, 220 m, static 0, dynamic 1
+SANDO_dyn_sando_hard_2ep: 5.2 min, 322 m, static 1, dynamic 3
+SANDO_dyn_sando_medium_2ep: 3.9 min, 239 m, static 0, dynamic 1
+(KAIROS_dyn_sando_hard_2ep: flown before static_023 was moved, counted against that world; see its hits.txt)

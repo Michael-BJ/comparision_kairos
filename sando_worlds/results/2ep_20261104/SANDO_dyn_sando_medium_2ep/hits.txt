@@ -1,0 +1,1 @@
+SANDO_dyn_sando_medium_2ep: 3.9 min, 239 m, static 0, dynamic 1

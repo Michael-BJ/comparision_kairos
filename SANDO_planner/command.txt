@@ -1,0 +1,2 @@
+tmux kill-session -t sando_sim
+~/sando_orig_ws/sim_dbg.sh -m dynamic -d easy -s install/setup.bash     # ganti: medium / hard

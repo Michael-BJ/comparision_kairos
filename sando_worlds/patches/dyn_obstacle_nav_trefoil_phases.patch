@@ -1,0 +1,131 @@
+--- a/dyn_expert/dyn_expert/core/motion.py
++++ b/dyn_expert/dyn_expert/core/motion.py
+@@ -336,38 +336,45 @@
+ class Trefoil(Motion):
+     """Trefoil knot (as in PANTHER/PRIMER-style benchmarks).
+ 
+-    x = sx (sin q + 2 sin 2q), y = sy (cos q - 2 cos 2q), z = sz (-sin 3q)
+-    with q = omega t + phase, around `center`.
++    x = sx (sin q1 + 2 sin q2), y = sy (cos q1 - 2 cos q2), z = sz (-sin q3)
++    with q_k = k omega t + p_k, around `center`. Default p_k = k phase (q_k = k q, q = omega t + phase).
++    `phases` = [p1, p2, p3] sets them directly: SANDO's obstacles (sando/launch/dyn_obstacles.launch.py,
++    expression strings "2*t/slower+offset") have p_k = offset for every k (dyn_gz_worlds/tools/from_sando.py).
+     """
+ 
+     kind = "trefoil"
+ 
+-    def __init__(self, center, scale, omega, phase):
++    def __init__(self, center, scale, omega, phase, phases=None):
+         self.c = np.asarray(center, float)
+         self.s = np.asarray(scale, float)
+         self.w = float(omega)
+         self.ph = float(phase)
++        self.p = (np.array([1.0, 2.0, 3.0]) * self.ph if phases is None else np.asarray(phases, float).reshape(3))
+         self.vertical = bool(abs(self.s[2]) > 0.0)
+ 
++    def _q(self, t):
++        t = np.atleast_1d(np.asarray(t, float))
++        return self.w * t + self.p[0], 2.0 * self.w * t + self.p[1], 3.0 * self.w * t + self.p[2]
++
+     def pos(self, t):
+-        q = self.w * np.atleast_1d(np.asarray(t, float)) + self.ph
+-        x = np.sin(q) + 2.0 * np.sin(2 * q)
+-        y = np.cos(q) - 2.0 * np.cos(2 * q)
+-        z = -np.sin(3 * q)
++        q1, q2, q3 = self._q(t)
++        x = np.sin(q1) + 2.0 * np.sin(q2)
++        y = np.cos(q1) - 2.0 * np.cos(q2)
++        z = -np.sin(q3)
+         return self.c + self.s * np.stack([x, y, z], axis=-1)
+ 
+     def vel(self, t):
+-        q = self.w * np.atleast_1d(np.asarray(t, float)) + self.ph
+-        dx = np.cos(q) + 4.0 * np.cos(2 * q)
+-        dy = -np.sin(q) + 4.0 * np.sin(2 * q)
+-        dz = -3.0 * np.cos(3 * q)
++        q1, q2, q3 = self._q(t)
++        dx = np.cos(q1) + 4.0 * np.cos(q2)
++        dy = -np.sin(q1) + 4.0 * np.sin(q2)
++        dz = -3.0 * np.cos(q3)
+         return self.w * self.s * np.stack([dx, dy, dz], axis=-1)
+ 
+     def acc(self, t):
+-        q = self.w * np.atleast_1d(np.asarray(t, float)) + self.ph
+-        ax = -np.sin(q) - 8.0 * np.sin(2 * q)
+-        ay = -np.cos(q) + 8.0 * np.cos(2 * q)
+-        az = 9.0 * np.sin(3 * q)
++        q1, q2, q3 = self._q(t)
++        ax = -np.sin(q1) - 8.0 * np.sin(q2)
++        ay = -np.cos(q1) + 8.0 * np.cos(q2)
++        az = 9.0 * np.sin(q3)
+         return self.w * self.w * self.s * np.stack([ax, ay, az], axis=-1)
+ 
+ 
+@@ -432,7 +439,7 @@
+     if kind == "sinusoid":
+         return Sinusoid(spec["center"], spec["amp"], spec["omega"], spec["phase"])
+     if kind == "trefoil":
+-        return Trefoil(spec["center"], spec["scale"], spec["omega"], spec["phase"])
++        return Trefoil(spec["center"], spec["scale"], spec["omega"], spec["phase"], spec.get("phases"))
+     if kind == "table":
+         return ClosedTable(spec["x"], spec["y"], spec["z"], spec["period"], spec.get("kind", "constant"))
+     if kind == "profile_bounce":
+--- a/dyn_gz_worlds/src/KinematicMover.cc
++++ b/dyn_gz_worlds/src/KinematicMover.cc
+@@ -17,7 +17,8 @@
+ //                    <entry_x/> <entry_y/> <heading_list/> <t_exit/> <t_hide/>; no reflections: enters,
+ //                    leaves, hidden at z = -10 for t_hide, enters again with the next variant
+ //   sinusoid:        <center/> <amp/> <omega_vec/> <phase_vec/>   (all Vector3)
+-//   trefoil:         <center/> <scale/> (Vector3)  <omega/> <phase/> (double)
++//   trefoil:         <center/> <scale/> (Vector3)  <omega/> <phase/> (double), optional <phases/> (Vector3):
++//                    q_k = k omega t + p_k, p_k = k phase by default or phases[k-1] (SANDO's obstacles)
+ //   table:           <table_period/> <table_z/> (double) <table_x>x0 x1 ...</table_x> <table_y/> (lists, same length):
+ //                    closed horizontal path sampled at equal time steps, periodic Catmull-Rom between the samples
+ //   static:          <p>x y z</p>
+@@ -76,6 +77,8 @@
+     this->scale_ = _sdf->Get<Vector3d>("scale", Vector3d::One).first;
+     this->omega_ = _sdf->Get<double>("omega", 0.0).first;
+     this->phase_ = _sdf->Get<double>("phase", 0.0).first;
++    this->hasPhases_ = _sdf->HasElement("phases");
++    this->phases_ = _sdf->Get<Vector3d>("phases", Vector3d::Zero).first;
+     this->p_ = _sdf->Get<Vector3d>("p", Vector3d::Zero).first;
+     if ((this->type_ == "profile_bounce" || this->type_ == "profile_respawn") && !this->ConfigureProfile(_sdf))
+     {
+@@ -310,10 +313,13 @@
+     }
+     if (this->type_ == "trefoil")
+     {
+-      const double q = omega_ * t + phase_;
+-      return Vector3d(center_.X() + scale_.X() * (std::sin(q) + 2.0 * std::sin(2.0 * q)),
+-                      center_.Y() + scale_.Y() * (std::cos(q) - 2.0 * std::cos(2.0 * q)),
+-                      center_.Z() + scale_.Z() * (-std::sin(3.0 * q)));
++      // q_k = k omega t + p_k; p_k = k phase unless <phases> is given (core/motion.py, Trefoil)
++      const double q1 = omega_ * t + (hasPhases_ ? phases_.X() : phase_);
++      const double q2 = 2.0 * omega_ * t + (hasPhases_ ? phases_.Y() : 2.0 * phase_);
++      const double q3 = 3.0 * omega_ * t + (hasPhases_ ? phases_.Z() : 3.0 * phase_);
++      return Vector3d(center_.X() + scale_.X() * (std::sin(q1) + 2.0 * std::sin(q2)),
++                      center_.Y() + scale_.Y() * (std::cos(q1) - 2.0 * std::cos(q2)),
++                      center_.Z() + scale_.Z() * (-std::sin(q3)));
+     }
+     return p_;
+   }
+@@ -326,6 +332,8 @@
+   double vAmp_{0.0};
+   double omega_{0.0};
+   double phase_{0.0};
++  Vector3d phases_;          // trefoil: per-harmonic phases p1 p2 p3 (optional)
++  bool hasPhases_{false};
+   // profile_bounce
+   double heading_{0.0}, tOff_{0.0}, turnRate_{0.0}, zAmp_{0.0}, zOmega_{0.0}, zPhase_{0.0};
+   double cycleT_{1.0}, cycleS_{0.0}, sOff_{0.0};
+--- a/dyn_expert/dyn_expert/make_world.py
++++ b/dyn_expert/dyn_expert/make_world.py
+@@ -142,6 +142,8 @@
+     elif t == "trefoil":
+         params += (f"<center>{_v(m['center'])}</center><scale>{_v(m['scale'])}</scale>"
+                    f"<omega>{float(m['omega']):.6f}</omega><phase>{float(m['phase']):.6f}</phase>")
++        if m.get("phases") is not None:
++            params += f"<phases>{' '.join(f'{float(c):.6f}' for c in m['phases'])}</phases>"
+         start = m["center"]
+     else:
+         params += f"<p>{_v(m['p'])}</p>"

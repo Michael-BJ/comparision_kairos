@@ -1,0 +1,4 @@
+KAIROS_dyn_sando_hard_2ep: 4.1 min, 313 m, static 0, dynamic 0
+(hits.py at run time, 2026-11-04 21:52, against the hard world as flown. This run was flown BEFORE static_023 was
+moved (README step 10); hits.py against the current dyn_sando_hard reports "static 2" because the drone flew where
+static_023 stands now. Use the world of hard_before_move23 to recount it.)

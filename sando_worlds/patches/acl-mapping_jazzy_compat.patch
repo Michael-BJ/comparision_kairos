@@ -1,0 +1,30 @@
+diff --git a/global_mapper_ros/CMakeLists.txt b/global_mapper_ros/CMakeLists.txt
+index b805484..6cff68d 100644
+--- a/global_mapper_ros/CMakeLists.txt
++++ b/global_mapper_ros/CMakeLists.txt
+@@ -24,6 +24,12 @@ endif()
+ # ————————————————————————————————————————————————————————
+ find_package(ament_cmake             REQUIRED)
+ find_package(rclcpp                   REQUIRED)
++# [SANDO_planner jazzy patch] Ubuntu 24.04 VTK 9.1 (pulled in through PCL) links VTK::mpi to MPI::MPI_C, a target that
++# only exists after find_package(MPI); the mapper uses neither VTK nor MPI
++find_package(MPI QUIET COMPONENTS C)
++if(NOT TARGET MPI::MPI_C)
++  add_library(MPI::MPI_C INTERFACE IMPORTED)
++endif()
+ find_package(global_mapper            REQUIRED)
+ find_package(fla_utils                REQUIRED)
+ find_package(pcl_conversions          REQUIRED)
+diff --git a/global_mapper_ros/include/global_mapper_ros/global_mapper_ros.h b/global_mapper_ros/include/global_mapper_ros/global_mapper_ros.h
+index 810ef29..8cc2de9 100644
+--- a/global_mapper_ros/include/global_mapper_ros/global_mapper_ros.h
++++ b/global_mapper_ros/include/global_mapper_ros/global_mapper_ros.h
+@@ -41,7 +41,7 @@
+ #include <visualization_msgs/msg/marker_array.hpp>
+ 
+ // ROS 2 utilities
+-#include <cv_bridge/cv_bridge.h>
++#include <cv_bridge/cv_bridge.hpp>
+ #include <image_transport/image_transport.hpp>
+ #include <message_filters/subscriber.h>
+ 

@@ -10,6 +10,10 @@
                    points/s, the real sensor's 200000) over the same field of view; min range 0.1 m.
     RealSense D435 at base_link (0.05, 0, 0), level; depth 120 x 90, 85.2 deg horizontal, 0.1 .. 10 m, 30 Hz
                    (urdf/_d435.gazebo.xacro, depth_camera_depth_max 10 of config/sando.yaml).
+  The poses are relative to base_link, which x500_base puts 0.24 m above the model origin (its <pose>0 0 .24>; the
+  odometry, the planner's state and the referee are the model origin). Until 2026-11-04 they were relative to
+  __model__, i.e. the Mid-360 0.04 m below base_link inside the frame plate: 2040 of its ~4200 returns per scan were
+  the plate's underside 0.1-0.3 m away, mapped as occupied voxels at the drone (fix in README "Diagnosis").
 -->
 <sdf version="1.9">
   <model name="x500_mid360_d435_tw2">
@@ -90,7 +94,7 @@
     </plugin>
 
     <link name="mid360_link">
-      <pose relative_to="__model__">0 0 0.2 0 0.3 0</pose>
+      <pose relative_to="base_link">0 0 0.2 0 0.3 0</pose>
       <inertial><mass>0.04</mass>
         <inertia><ixx>1e-5</ixx><iyy>1e-5</iyy><izz>1e-5</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
       <visual name="mid360_visual">
@@ -117,7 +121,7 @@
       <child>mid360_link</child>
     </joint>
     <link name="d435_link">
-      <pose relative_to="__model__">0.05 0 0 0 0 0</pose>
+      <pose relative_to="base_link">0.05 0 0 0 0 0</pose>
       <inertial><mass>0.07</mass>
         <inertia><ixx>1e-5</ixx><iyy>1e-5</iyy><izz>1e-5</izz><ixy>0</ixy><ixz>0</ixz><iyz>0</iyz></inertia></inertial>
       <visual name="d435_visual">

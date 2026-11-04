@@ -1,0 +1,1 @@
+KAIROS_dyn_sando_easy_2ep: 3.0 min, 222 m, static 0, dynamic 0

@@ -1,0 +1,232 @@
+{
+ "scenario": "dyn_sando_hard",
+ "checkpoint": "/home/michael/kairosV3/runs/2nov_exc3/B/best.pt",
+ "student": {
+  "mode": "kairos_mighty",
+  "seed_mode": "network",
+  "continue_on_collision": true,
+  "bounds_margin": 1000.0,
+  "n_samples": 16,
+  "n_refine": 6,
+  "z_scale": 1.0,
+  "sample_seed": 0,
+  "perception": "sensor",
+  "prediction": "head2",
+  "cv_window": 0.3,
+  "memory": "on",
+  "memory_inflate": false,
+  "memory_time": 4.0,
+  "sigma_k": 0.0,
+  "sigma_t": 1.0,
+  "sigma_cap": 0.5,
+  "pending_activation": 0.3,
+  "static_clearance": 0.55,
+  "reference_episode": "",
+  "max_episodes": 2,
+  "min_events": 2,
+  "memory_belief": -1.0,
+  "safety_vision": 0.0,
+  "remembered_pred": "hold",
+  "vision_unc_speed": 1.5,
+  "track_range": 12.0,
+  "net_view": "auto",
+  "altitude_recover": true,
+  "z_margin": 0.2,
+  "retime": false,
+  "emergency": false,
+  "expert_label": false
+ },
+ "global_guidance": "none",
+ "altitude_band": [
+  1.0,
+  3.0
+ ],
+ "reference": "/home/michael/dynamic_39_world_1nov_exc3/dyn_kairos2_010_mix/gz_dyn_kairos2_010_mix_ep0001.h5",
+ "v_max": 1.5,
+ "a_max": 4.0,
+ "events": 808,
+ "episodes_real": 2,
+ "episodes_other": 0,
+ "outcomes": {
+  "reached": 2
+ },
+ "success_rate": 1.0,
+ "executed": {
+  "refined": 808
+ },
+ "no_target": 0,
+ "raw_feasible": 0.8082456683168316,
+ "events_with_raw_feasible": 0.9653465346534653,
+ "refined_feasible": 0.9567445674456745,
+ "refine_shift_median": 0.03149770831336712,
+ "plan_ms": {
+  "total": {
+   "median": 236.7680309998832,
+   "p90": 266.6317131001051
+  },
+  "target": {
+   "median": 19.104502501249954,
+   "p90": 23.543677599445804
+  },
+  "pred": {
+   "median": 31.761848499627376,
+   "p90": 38.46581560028426
+  },
+  "net": {
+   "median": 21.214927500295744,
+   "p90": 27.843877699160657
+  },
+  "score": {
+   "median": 35.133681500155944,
+   "p90": 45.35147120022885
+  },
+  "refine": {
+   "median": 113.84128400004556,
+   "p90": 132.4833781000052
+  }
+ },
+ "reached_speed_mean": 1.4706458953266757,
+ "travel": {
+  "episodes": 2,
+  "distance_m": {
+   "per_episode": [
+    153.06159641331956,
+    157.22115716628377
+   ],
+   "total": 310.2827535796033,
+   "mean": 155.14137678980165
+  },
+  "time_s": {
+   "per_episode": [
+    103.512,
+    107.47199999999998
+   ],
+   "total": 210.98399999999998,
+   "mean": 105.49199999999999
+  },
+  "mean_speed": 1.4706458953266757,
+  "detour": 1.0358606018803833
+ },
+ "prediction": {
+  "head2": 2814,
+  "remembered": 492,
+  "pred_fallback": 0,
+  "outside_slots": 598,
+  "held": 329,
+  "sigma_inflate": null
+ },
+ "emergency": null,
+ "retime": null,
+ "corridor": null,
+ "memory_belief": null,
+ "expert_label": null,
+ "replan_dt": 0.2,
+ "foresee_dt": 0.4,
+ "tracker": {
+  "seen": 2158,
+  "tracked": 2102,
+  "tracks": 3510,
+  "false_tracks": 0,
+  "recall": 0.974050046339203,
+  "centre_err": {
+   "median": 0.02453946777122308,
+   "p90": 0.05876815722058149
+  },
+  "velocity_err": {
+   "median": 0.07269484314151009,
+   "p90": 0.16483449225602487
+  },
+  "radius_err": {
+   "median": 0.0028568459923157263,
+   "p90": 0.004360885641174039
+  }
+ },
+ "odometry": {
+  "position_err": {
+   "median": 0.1808582096912631,
+   "p90": 0.40338180970635096,
+   "max": 0.5032734739587343
+  },
+  "yaw_err_deg": {
+   "median": 0.34560078984987563,
+   "p90": 1.0965159674864158,
+   "max": 1.7577739938909362
+  }
+ },
+ "depth": {
+  "snapshot_age": {
+   "median": 0.1599999964237213,
+   "p90": 0.2280000001192093,
+   "max": 0.515999972820282
+  },
+  "events_older_0_25s": 0.055693069306930694,
+  "used": 2003,
+  "superseded": 0,
+  "dropped": 0,
+  "wait": {
+   "median": 0.03200000000001069,
+   "p90": 0.04800000000000182,
+   "max": 0.11200000000000188
+  }
+ },
+ "referee": {
+  "checked": 8481,
+  "dropped": 0,
+  "max_queue": 14,
+  "max_gap": 0.1319999999999979
+ },
+ "episodes": [
+  {
+   "episode": 1,
+   "outcome": "reached",
+   "real": true,
+   "events": 403,
+   "duration": 103.512,
+   "end": [
+    149.4352134166288,
+    0.06808260235818775,
+    2.047218916564138
+   ],
+   "path": 153.06159641331956,
+   "min_dyn_dist": 1.1550681591033936,
+   "fallbacks": 0,
+   "start": [
+    -0.0951948644337701,
+    -0.02802460352141483,
+    1.9267747700214386
+   ],
+   "goal": [
+    150.0,
+    0.0,
+    2.0
+   ],
+   "collisions": []
+  },
+  {
+   "episode": 2,
+   "outcome": "reached",
+   "real": true,
+   "events": 405,
+   "duration": 107.47199999999998,
+   "end": [
+    0.5682499250662484,
+    0.1763732624631637,
+    1.9401496450663696
+   ],
+   "path": 157.22115716628377,
+   "min_dyn_dist": 0.9747028350830078,
+   "fallbacks": 0,
+   "start": [
+    149.45576918556117,
+    0.023413281979075835,
+    2.054043084383011
+   ],
+   "goal": [
+    0.0,
+    0.0,
+    2.0
+   ],
+   "collisions": []
+  }
+ ]
+}
