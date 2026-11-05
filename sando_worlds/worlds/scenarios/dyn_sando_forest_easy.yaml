@@ -1,0 +1,370 @@
+seed: 0
+generator: sando_forest (from_sando_forest.py)
+bounds:
+  lo:
+  - -2.0
+  - -22.0
+  - 0.0
+  hi:
+  - 107.0
+  - 22.0
+  - 7.0
+spawn:
+- 0.0
+- 0.0
+- 0.0
+route:
+  a:
+  - 0.0
+  - 0.0
+  b:
+  - 105.0
+  - 0.0
+  jitter: 0.0
+  z: 2.0
+  z_band: 1.0
+layout:
+  source: github.com/mit-acl/sando 1a738df, worlds/easy_forest.world (scripts/generate_random_forest.py,
+    shape_mode cylinder, min_clearance 1.5)
+  case: easy
+  n_static: 41
+  course: 105.0
+  static_obstacles: true
+  n_dynamic: 0
+  footprint_density: 0.05
+  min_gap: 1.705
+  pad_clearance: 5.824
+static:
+- type: cylinder
+  kind: forest
+  xy:
+  - 45.2762
+  - -8.9784
+  radius: 1.379
+  height: 6.0
+  group: sando_forest_0
+- type: cylinder
+  kind: forest
+  xy:
+  - 80.6973
+  - -7.3945
+  radius: 1.2025
+  height: 6.0
+  group: sando_forest_1
+- type: cylinder
+  kind: forest
+  xy:
+  - 92.757
+  - 0.1754
+  radius: 1.2917
+  height: 6.0
+  group: sando_forest_2
+- type: cylinder
+  kind: forest
+  xy:
+  - 64.5107
+  - -9.2922
+  radius: 1.3779
+  height: 6.0
+  group: sando_forest_3
+- type: cylinder
+  kind: forest
+  xy:
+  - 83.0964
+  - 14.8871
+  radius: 1.4914
+  height: 6.0
+  group: sando_forest_4
+- type: cylinder
+  kind: forest
+  xy:
+  - 91.7951
+  - 6.8571
+  radius: 1.3649
+  height: 6.0
+  group: sando_forest_5
+- type: cylinder
+  kind: forest
+  xy:
+  - 46.5555
+  - 4.2025
+  radius: 1.0503
+  height: 6.0
+  group: sando_forest_6
+- type: cylinder
+  kind: forest
+  xy:
+  - 50.7692
+  - 13.5287
+  radius: 1.4833
+  height: 6.0
+  group: sando_forest_7
+- type: cylinder
+  kind: forest
+  xy:
+  - 57.7333
+  - -18.0752
+  radius: 1.4025
+  height: 6.0
+  group: sando_forest_8
+- type: cylinder
+  kind: forest
+  xy:
+  - 84.7053
+  - 6.3228
+  radius: 1.1994
+  height: 6.0
+  group: sando_forest_9
+- type: cylinder
+  kind: forest
+  xy:
+  - 88.8436
+  - -9.605
+  radius: 1.2468
+  height: 6.0
+  group: sando_forest_10
+- type: cylinder
+  kind: forest
+  xy:
+  - 22.9935
+  - 2.5066
+  radius: 1.4352
+  height: 6.0
+  group: sando_forest_11
+- type: cylinder
+  kind: forest
+  xy:
+  - 82.4183
+  - -1.9268
+  radius: 1.4838
+  height: 6.0
+  group: sando_forest_12
+- type: cylinder
+  kind: forest
+  xy:
+  - 14.8128
+  - 1.9318
+  radius: 1.16
+  height: 6.0
+  group: sando_forest_13
+- type: cylinder
+  kind: forest
+  xy:
+  - 98.2023
+  - 3.8646
+  radius: 1.2737
+  height: 6.0
+  group: sando_forest_14
+- type: cylinder
+  kind: forest
+  xy:
+  - 62.3933
+  - -4.3225
+  radius: 1.2225
+  height: 6.0
+  group: sando_forest_15
+- type: cylinder
+  kind: forest
+  xy:
+  - 22.6505
+  - -11.8133
+  radius: 1.1452
+  height: 6.0
+  group: sando_forest_16
+- type: cylinder
+  kind: forest
+  xy:
+  - 50.7154
+  - -15.3173
+  radius: 1.3283
+  height: 6.0
+  group: sando_forest_17
+- type: cylinder
+  kind: forest
+  xy:
+  - 94.1201
+  - 12.7132
+  radius: 1.4384
+  height: 6.0
+  group: sando_forest_18
+- type: cylinder
+  kind: forest
+  xy:
+  - 56.9413
+  - -4.0304
+  radius: 1.4615
+  height: 6.0
+  group: sando_forest_19
+- type: cylinder
+  kind: forest
+  xy:
+  - 101.496
+  - 15.7288
+  radius: 1.1378
+  height: 6.0
+  group: sando_forest_20
+- type: cylinder
+  kind: forest
+  xy:
+  - 64.0435
+  - -0.514
+  radius: 1.0412
+  height: 6.0
+  group: sando_forest_21
+- type: cylinder
+  kind: forest
+  xy:
+  - 28.0346
+  - 8.601
+  radius: 1.4225
+  height: 6.0
+  group: sando_forest_22
+- type: cylinder
+  kind: forest
+  xy:
+  - 83.8898
+  - -15.0889
+  radius: 1.1102
+  height: 6.0
+  group: sando_forest_23
+- type: cylinder
+  kind: forest
+  xy:
+  - 8.7502
+  - 2.7554
+  radius: 1.3488
+  height: 6.0
+  group: sando_forest_24
+- type: cylinder
+  kind: forest
+  xy:
+  - 70.6013
+  - -17.7327
+  radius: 1.2671
+  height: 6.0
+  group: sando_forest_25
+- type: cylinder
+  kind: forest
+  xy:
+  - 40.3525
+  - 17.9683
+  radius: 1.3032
+  height: 6.0
+  group: sando_forest_26
+- type: cylinder
+  kind: forest
+  xy:
+  - 98.1711
+  - -11.9642
+  radius: 1.0108
+  height: 6.0
+  group: sando_forest_27
+- type: cylinder
+  kind: forest
+  xy:
+  - 6.3332
+  - -2.8108
+  radius: 1.1053
+  height: 6.0
+  group: sando_forest_28
+- type: cylinder
+  kind: forest
+  xy:
+  - 38.3677
+  - -12.0648
+  radius: 1.13
+  height: 6.0
+  group: sando_forest_29
+- type: cylinder
+  kind: forest
+  xy:
+  - 13.906
+  - 18.5337
+  radius: 1.0197
+  height: 6.0
+  group: sando_forest_30
+- type: cylinder
+  kind: forest
+  xy:
+  - 75.6136
+  - 12.7351
+  radius: 1.1793
+  height: 6.0
+  group: sando_forest_31
+- type: cylinder
+  kind: forest
+  xy:
+  - 69.8895
+  - 17.6498
+  radius: 1.0847
+  height: 6.0
+  group: sando_forest_32
+- type: cylinder
+  kind: forest
+  xy:
+  - 86.618
+  - -5.8855
+  radius: 1.3381
+  height: 6.0
+  group: sando_forest_33
+- type: cylinder
+  kind: forest
+  xy:
+  - 50.2362
+  - -3.3698
+  radius: 1.2984
+  height: 6.0
+  group: sando_forest_34
+- type: cylinder
+  kind: forest
+  xy:
+  - 34.6176
+  - -5.3556
+  radius: 1.2543
+  height: 6.0
+  group: sando_forest_35
+- type: cylinder
+  kind: forest
+  xy:
+  - 76.6137
+  - -6.194
+  radius: 1.1255
+  height: 6.0
+  group: sando_forest_36
+- type: cylinder
+  kind: forest
+  xy:
+  - 27.6058
+  - 17.0916
+  radius: 1.1404
+  height: 6.0
+  group: sando_forest_37
+- type: cylinder
+  kind: forest
+  xy:
+  - 66.0688
+  - 4.5661
+  radius: 1.1439
+  height: 6.0
+  group: sando_forest_38
+- type: cylinder
+  kind: forest
+  xy:
+  - 4.3428
+  - -11.5728
+  radius: 1.194
+  height: 6.0
+  group: sando_forest_39
+- type: cylinder
+  kind: forest
+  xy:
+  - 66.4322
+  - -4.5823
+  radius: 1.1197
+  height: 6.0
+  group: sando_forest_40
+name: dyn_sando_forest_easy
+dynamic: []
+edits:
+- '2026-11-05: from_sando_forest.py, 41 cylinders of SANDO''s easy_forest.world as
+  they are'

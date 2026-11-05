@@ -68,7 +68,9 @@ A method whose original timing differs (for example NEO: replan 1.0 s, plan 1.0 
 | `dyn_long200_mix_021_clear2` | second test world, mixed sphere motions |
 | `dyn_long200_smooth_021_clear2_static` | static-only control: `dyn_long200_smooth_021_clear2` with all 61 spheres removed (`tools/drop_kinds.py ... line loop --suffix _static`); the same 100 static elements, route, spawn and bounds. Separates static-avoidance failures from dynamic ones. |
 | one long200 world not used before | final numbers, chosen before any method is flown on it |
-| `dyn_sando_easy` / `_medium` / `_hard` (+ `_static`) | difficulty ladder derived from SANDO's benchmark layout (105 / 105 / 150 m, bricks, gaps >= 1.75 m, training-world motions, hand-edited); how they were made, tools and first 2-episode runs: `sando_worlds/README.md` |
+| `dyn_sando_easy` / `_medium` / `_hard` | difficulty ladder derived from SANDO's benchmark layout (105 / 105 / 150 m, bricks, gaps >= 1.75 m, training-world motions, hand-edited); how they were made, tools and first 2-episode runs: `sando_worlds/README.md` |
+| `dyn_sando_hard_dense` | `dyn_sando_hard` with 21 more spheres, 6 per arena (60, the long200 density); new spheres keep 0.3 m to other spheres (the training generator's margin, as in long200) and 1.75 m to the statics (2026-11-05) |
+| `dyn_sando_forest_easy` / `_medium` / `_hard` | static-only: SANDO's own static forests (its "Sim Static" benchmark, `worlds/{easy,medium,hard}_forest.world`), 41 / 81 / 162 cylinders r 1.0-1.5 m, 6 m high, 5 / 10 / 20 % footprint, gap >= 1.5 m; pads (0, 0) -> (105, 0). Replace the `dyn_sando_*_static` controls (deleted 2026-11-05, never flown) |
 
 **All results so far (2026-11-03) were flown in `dyn_long200_smooth_021_clear2` only.** `dyn_long200_mix_021_clear2` and the final world have not been flown by any method yet; every number in this file is for the smooth world. The `dyn_sando_*` worlds have 2-pass checks only (2026-11-04, `sando_worlds/README.md`); how to measure them: section 3.
 
@@ -128,13 +130,19 @@ A run is invalid if `test.log` shows `left OFFBOARD` or a traceback; the script 
 
 ### Measuring on the SANDO-based worlds (easy / medium / hard)
 
-Six worlds, each flown by every method: the static + dynamic world and its static-only control.
+Each world flown by every method: the static + dynamic worlds and the static-only forests of SANDO's static
+benchmark (2026-11-05: the forests replace the earlier `dyn_sando_*_static` controls, which had the same statics as
+the dynamic worlds and were never flown).
 
-| World | Static-only control | Course | Time limit per pass | Statics | Spheres |
+| World | Kind | Course | Time limit per pass | Statics | Spheres |
 |---|---|---|---|---|---|
-| `dyn_sando_easy` | `dyn_sando_easy_static` | (0, 0) -> (105, 0), 105 m | 290 s | 18 | 10 |
-| `dyn_sando_medium` | `dyn_sando_medium_static` | (0, 0) -> (105, 0), 105 m | 290 s | 26 | 24 |
-| `dyn_sando_hard` | `dyn_sando_hard_static` | (0, 0) -> (150, 0), 150 m | 410 s | 35 | 39 |
+| `dyn_sando_easy` | static + dynamic | (0, 0) -> (105, 0), 105 m | 290 s | 18 | 10 |
+| `dyn_sando_medium` | static + dynamic | (0, 0) -> (105, 0), 105 m | 290 s | 26 | 24 |
+| `dyn_sando_hard` | static + dynamic | (0, 0) -> (150, 0), 150 m | 410 s | 35 | 39 |
+| `dyn_sando_hard_dense` | static + dynamic | (0, 0) -> (150, 0), 150 m | 410 s | 35 | 60 |
+| `dyn_sando_forest_easy` | static only (SANDO's forest) | (0, 0) -> (105, 0), 105 m | 290 s | 41 cylinders | 0 |
+| `dyn_sando_forest_medium` | static only (SANDO's forest) | (0, 0) -> (105, 0), 105 m | 290 s | 81 cylinders | 0 |
+| `dyn_sando_forest_hard` | static only (SANDO's forest) | (0, 0) -> (105, 0), 105 m | 290 s | 162 cylinders | 0 |
 
 Everything in section 2 applies, except the course: pad A at x 0, pad B at x 105 (hard: 150), so a pass is
 105 m (hard 150 m) instead of ~200 m. Passes alternate A -> B and B -> A; **24 passes per world** for the final
@@ -152,12 +160,12 @@ closer than 1.75 m to a static after the hand edits; open edge lanes at y 6-8 m)
    window opened with `show_world.sh`.
 3. To look at a world first: `~/Dynamic_obstacle/show_world.sh dyn_sando_medium` (Gazebo only; close it before a run).
 
-**Flying a method on all six worlds** (`sando_worlds/tools/run_worlds.sh <method> <passes> [worlds]`: runs the
+**Flying a method on the worlds** (`sando_worlds/tools/run_worlds.sh <method> <passes> [worlds]`: runs the
 method's own `run.sh` once per world, then `hits.py` for each run):
 
 ```bash
 cd ~/comparision_for_kairos/sando_worlds/tools
-W="dyn_sando_easy_static dyn_sando_medium_static dyn_sando_hard_static dyn_sando_easy dyn_sando_medium dyn_sando_hard"
+W="dyn_sando_forest_easy dyn_sando_forest_medium dyn_sando_forest_hard dyn_sando_easy dyn_sando_medium dyn_sando_hard dyn_sando_hard_dense"
 ./run_worlds.sh kairos 24 $W            # KAIROS+MIGHTY          -> KAIROS_<world>_24ep
 ./run_worlds.sh sando 24 $W             # SANDO (own sensors: Mid-360)
 ./run_worlds.sh sando_d435 24 $W        # SANDO with its Table VII sensor (D435), optional
@@ -188,7 +196,7 @@ Results: `~/kairos_test/20261102_compare/logs/<NAME>/`, `runs/<NAME>/`, `odom_<N
 (~90-115 s), 45-60 min for hard; about 4-5 h for the six worlds.
 
 **Reporting.** Per world and method, the metrics of section 2 (SR, CR, reached, static / dynamic hits, distance, mean
-speed, planning time), the static-only control next to the static + dynamic world. First 2-pass checks (KAIROS+MIGHTY
+speed, planning time), the static-only forests next to the static + dynamic worlds. First 2-pass checks (KAIROS+MIGHTY
 6/6 without a collision; SANDO 2/6, its contacts growing with density): `sando_worlds/README.md`, "Results so far".
 
 ## 4. Per-method settings

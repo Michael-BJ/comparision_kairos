@@ -15,9 +15,10 @@ from SANDO's benchmark layout"; SANDO's own numbers (Tables VI / VII) are not co
 | Path | What |
 |---|---|
 | `worlds/history/` | earlier versions that results were flown in |
-| `worlds/scenarios/*.yaml`, `worlds/sdf/*.sdf` | copies of the 9 worlds as they are in `~/Dynamic_obstacle/src/dyn_obstacle_nav/dyn_gz_worlds/{scenarios,worlds}` (the package copy is the one Gazebo and the planners load) |
+| `worlds/scenarios/*.yaml`, `worlds/sdf/*.sdf` | copies of the 10 worlds as they are in `~/Dynamic_obstacle/src/dyn_obstacle_nav/dyn_gz_worlds/{scenarios,worlds}` (the package copy is the one Gazebo and the planners load) |
 | `tools/from_sando.py` | generator (canonical copy: `dyn_gz_worlds/tools/from_sando.py`) |
-| `tools/edit/` | scripts that saved the Gazebo edits and changed heights / added spheres |
+| `tools/from_sando_forest.py` | SANDO's static forests (`worlds/*_forest.world`) -> `dyn_sando_forest_*` |
+| `tools/edit/` | scripts that saved the Gazebo edits and changed heights / added spheres; `densify.py` (-> `dyn_sando_hard_dense`) |
 | `tools/measure/` | lidar / tracker probe for SANDO, its analysis, motion statistics, SANDO layout plot |
 | `tools/sando_original/` | SANDO's own rviz-only benchmark on ROS 2 Jazzy (build, demo, benchmark, `/trajs` capture) |
 | `tools/run_worlds.sh` | fly a method on the worlds and count collisions |
@@ -32,6 +33,10 @@ from SANDO's benchmark layout"; SANDO's own numbers (Tables VI / VII) are not co
 | `dyn_sando_easy` | (0, 0) -> (105, 0), 105 m | statics and spheres mixed | 18: 7 brick pillars 0.6 x 0.6 x 4.0 m; 11 brick walls 4 m long, 0.3 / 0.9 m thick, 1.5 (2), 1.8 (7), 2.1 (2) m high | 10 |
 | `dyn_sando_medium` | (0, 0) -> (105, 0), 105 m | zones: 8 static fields 4.875 m, 7 dynamic arenas 8 m | 26: 13 pillars 3.0-3.9 m; 13 walls 1.5-2.1 m | 24 |
 | `dyn_sando_hard` | (0, 0) -> (150, 0), 150 m | zones: 11 static fields 5.45 m, 10 dynamic arenas 8 m | 35: 19 pillars 3.0-3.9 m; 16 walls 1.5-2.1 m | 39 |
+| `dyn_sando_hard_dense` | (0, 0) -> (150, 0), 150 m | as `dyn_sando_hard` | as `dyn_sando_hard` | 60 (6 per arena) |
+| `dyn_sando_forest_easy` | (0, 0) -> (105, 0), 105 m | SANDO's static forest, x 4-102, y +-18.5 | 41 cylinders r 1.0-1.5 m, 6 m high, 5 % footprint | 0 |
+| `dyn_sando_forest_medium` | (0, 0) -> (105, 0), 105 m | SANDO's static forest | 81 cylinders, 10 % footprint | 0 |
+| `dyn_sando_forest_hard` | (0, 0) -> (105, 0), 105 m | SANDO's static forest | 162 cylinders, 20 % footprint | 0 |
 
 Common to all: route altitude 2 m, altitude band 1-3 m (`route.z`, `route.z_band`); obstacles within y -6..6 m
 (walls up to +-8 m); spheres radius 0.45 m (the largest of the training worlds), horizontal motions at
@@ -39,8 +44,7 @@ Common to all: route altitude 2 m, altitude band 1-3 m (`route.z`, `route.z_band
 turn tables); no collision geometry (the referee counts contacts). Time limit per pass with the protocol
 (`timeout_factor` 4, v_max 1.5): 290 s (easy, medium), 410 s (hard).
 
-Variants: `<world>_static` = the same statics, no spheres (separates static from dynamic failures);
-`<world>_trefoil` = the same statics with SANDO's own 3D trefoil motions (first N of SANDO's dynamic draws, r 0.5 m,
+Variants: `<world>_trefoil` = the same statics with SANDO's own 3D trefoil motions (first N of SANDO's dynamic draws, r 0.5 m,
 no spacing guarantee), kept for an ablation of motions outside the training distribution.
 
 ### How they were made (all steps on 2026-11-04, choices by the user)
@@ -85,6 +89,29 @@ no spacing guarantee), kept for an ablation of motions outside the training dist
   instead of constant / accel / turn (motions identical).
 - Walls near the goal still cross the centre in hard (x 129.6, 140.2, 143.2).
 
+### Denser hard world and SANDO's static forests (2026-11-05, choices by the user)
+
+- **`dyn_sando_hard_dense`** (`tools/edit/densify.py <pkg> dyn_sando_hard dyn_sando_hard_dense 6 40 0.3`):
+  `dyn_sando_hard` with 21 more spheres, 6 per arena, 60 in all: the density of `dyn_long200_smooth_021_clear2`
+  (61 spheres, 6.1 per occupied arena). Statics, zones, route and the 39 old spheres unchanged. New spheres: the
+  training kinds and shares (constant 5, line 5, accel 4, loop 4, turn 3), altitudes 1-3 m, r 0.45 m, >= 1.75 m to
+  the statics (measured 1.86 m) but only >= 0.3 m to the other spheres, the training generator's margin
+  (`scenario_gen.SEP_MARGIN`), as in long200 (min 0.32 m there). With 1.75 m between spheres only 5 fitted (44).
+  76 sphere pairs now come closer than 1.75 m (long200: 105): gaps between spheres can close for a while. Per m of
+  route it is denser than long200 (0.40 against 0.30 spheres per m: every arena is occupied). No `stopgo` motion
+  (none in the training worlds either).
+- **`dyn_sando_forest_easy` / `_medium` / `_hard`** (`tools/from_sando_forest.py ~/sando_orig_ws/src/sando/worlds
+  <pkg>`): the static-only worlds, SANDO's own static benchmark ("Sim Static": `run_benchmark.py --mode gazebo`,
+  `worlds/{easy,medium,hard}_forest.world`, made by `scripts/generate_random_forest.py`, cylinders,
+  `min_clearance` 1.5). Every cylinder copied as it is: 41 / 81 / 162, r 1.0-1.5 m, 6 m high (above the 1-3 m
+  band: no way over), x 4-102, y +-18.7, footprint density 5 / 10 / 20 %, min gap 1.71 / 1.50 / 1.50 m (below the
+  1.75 m of the other worlds, kept as SANDO's). Pads as SANDO's mission: (0, 0) -> (105, 0), nearest cylinder
+  surface 5.8 / 5.8 / 4.3 m from a pad; the straight line A -> B runs 5.8 / 9.2 / 26.2 m inside cylinders.
+  They replace the `dyn_sando_{easy,medium,hard}_static` controls (same statics as the dynamic worlds, no spheres),
+  deleted on 2026-11-05 before any run in them (recoverable from git history, commit 45b531c).
+  `from_sando.py`, `tools/edit/save_edit.py` and `edit_medium.py` still write a `_static` variant when run again:
+  delete it, the forests are the static-only worlds.
+
 ## Shared-code changes (patches/)
 
 - `dyn_obstacle_nav_trefoil_phases.patch` (`~/Dynamic_obstacle/src/dyn_obstacle_nav`): optional per-harmonic phases
@@ -110,7 +137,7 @@ no spacing guarantee), kept for an ablation of motions outside the training dist
 # fly a method, 2 episodes on the three worlds, then collisions from the Gazebo pose
 tools/run_worlds.sh kairos 2
 tools/run_worlds.sh sando 2 dyn_sando_hard                # sando | sando_d435 | neo | neo_regression | agile
-tools/run_worlds.sh kairos 24 dyn_sando_easy_static       # official runs: 24 passes
+tools/run_worlds.sh kairos 24 dyn_sando_forest_easy       # official runs: 24 passes
 
 # SANDO's lidar / tracking probe on a world
 tools/measure/run_sando_probe.sh dyn_sando_easy 2 /tmp/probe_easy
