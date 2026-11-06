@@ -30,10 +30,9 @@ from SANDO's benchmark layout"; SANDO's own numbers (Tables VI / VII) are not co
 
 | World | Course A -> B | Layout | Statics | Dynamic spheres |
 |---|---|---|---|---|
-| `dyn_sando_easy` | (0, 0) -> (105, 0), 105 m | statics and spheres mixed | 18: 7 brick pillars 0.6 x 0.6 x 4.0 m; 11 brick walls 4 m long, 0.3 / 0.9 m thick, 1.5 (2), 1.8 (7), 2.1 (2) m high | 10 |
-| `dyn_sando_medium` | (0, 0) -> (105, 0), 105 m | zones: 8 static fields 4.875 m, 7 dynamic arenas 8 m | 26: 13 pillars 3.0-3.9 m; 13 walls 1.5-2.1 m | 24 |
-| `dyn_sando_hard` | (0, 0) -> (150, 0), 150 m | zones: 11 static fields 5.45 m, 10 dynamic arenas 8 m | 35: 19 pillars 3.0-3.9 m; 16 walls 1.5-2.1 m | 39 |
-| `dyn_sando_hard_dense` | (0, 0) -> (150, 0), 150 m | as `dyn_sando_hard` | as `dyn_sando_hard` | 60 (6 per arena) |
+| `dyn_sando_easy` | (0, 0) -> (105, 0), 105 m | statics and spheres mixed | 18: 7 brick pillars 0.6 x 0.6 x 4.0 m; 11 brick walls 4 m long, 0.3 / 0.9 m thick, 1.5 (2), 1.8 (7), 2.1 (2) m high | 18 (10 + 8 added 2026-11-06) |
+| `dyn_sando_medium` | (0, 0) -> (105, 0), 105 m | zones: 8 static fields 4.875 m, 7 dynamic arenas 8 m | 26: 13 pillars 3.0-3.9 m; 13 walls 1.5-2.1 m | 28 (24 + 4 added 2026-11-06) |
+| `dyn_sando_hard_dense` | (0, 0) -> (150, 0), 150 m | zones: 11 static fields 5.45 m, 10 dynamic arenas 8 m | 35: 19 pillars 3.0-3.9 m; 16 walls 1.5-2.1 m | 60 (39 + 21 added 2026-11-05, 6 per arena) |
 | `dyn_sando_forest_easy` | (0, 0) -> (105, 0), 105 m | SANDO's static forest, x 4-102, y +-18.5 | 41 cylinders r 1.0-1.5 m, 6 m high, 5 % footprint | 0 |
 | `dyn_sando_forest_medium` | (0, 0) -> (105, 0), 105 m | SANDO's static forest | 81 cylinders, 10 % footprint | 0 |
 | `dyn_sando_forest_hard` | (0, 0) -> (105, 0), 105 m | SANDO's static forest | 162 cylinders, 20 % footprint | 0 |
@@ -89,6 +88,45 @@ no spacing guarantee), kept for an ablation of motions outside the training dist
   instead of constant / accel / turn (motions identical).
 - Walls near the goal still cross the centre in hard (x 129.6, 140.2, 143.2).
 
+### Harder easy and medium worlds, hard_dense as the hard level (2026-11-06, choices by the user)
+
+- **Bounds y +-6.5 m** (were +-9 m) in `dyn_sando_easy`, `_medium`, `_hard_dense` (scenario only; the `.sdf` does
+  not carry the bounds and is unchanged). The spheres move within |y| <= 6.0 m, so the wider bounds left an
+  empty lane of 3 m on both sides: in `dyn_sando_hard_dense` KAIROS+MIGHTY used it in 9 of 23 passes (up to 64 %
+  of a pass), SANDO in 23 of 24 (median 50 %), KAIROS raw in its one (partial) pass 44 %. Both planners get the
+  bounds: SANDO `y_min` / `y_max` from the scenario (`SANDO_planner/launch/sando_test.launch.py`); KAIROS keeps its
+  local targets >= 1 m inside them (planner config `bounds_margin: 1.0`), its trajectory is not bounded (KAIROS raw
+  flew to |y| 7.5-8.6 m in its first passes after the change). No method's episode is ended out of bounds (KAIROS
+  `run.sh` `bounds_margin:=1000`; with 1.0 every excursion split a pass into 3 episodes, two of them empty, and
+  SANDO's bridge has no such end): two raw runs (with 1000, then 1.0) were stopped and discarded. The referee applies KAIROS's rule to every method
+  (`hits.py`: Gazebo pose > 1 m outside the bounds; such a pass is no success). Hidden side walls (visible to
+  the sensors, not in the Gazebo window) were tried first: a visual with `visibility_flags` 0x20000000 was hidden
+  from the depth cameras too, so the bounds were chosen instead. Some walls reach beyond +-6.5 m (|y| up to
+  8.7 / 10.0 / 8.3 m), they stay obstacles. All runs in these three worlds before this change no longer count.
+
+- **`dyn_sando_hard` deleted** (2026-11-06): with medium at 0.27 spheres per m it was no longer harder in spheres
+  (0.26 per m). `dyn_sando_hard_dense` (same statics, 60 spheres, 0.40 per m) is the hard level and the default of
+  `run_worlds.sh`. `dyn_sando_hard` is in git history before this change and is still the source that
+  `densify.py` made `dyn_sando_hard_dense` from; `dyn_sando_hard_trefoil` (its statics, SANDO's trefoils) stays.
+
+- **`dyn_sando_easy`** now has 18 spheres instead of 10 (`tools/edit/easy_more.py <pkg> 18`, in place; the
+  10-sphere version is in git history before this change). The user wanted easy harder but still below medium /
+  hard: 0.17 spheres per m of route (medium 0.23, hard 0.26). The 8 new spheres are SANDO's next dynamic draws
+  (seed 0, draws 10-14 and 16-18; draw 15 found no path), each near its SANDO x and at its SANDO z0 mapped to
+  1..3 m, kind drawn with the training shares (7 lines, 1 accel), GAP 1.75 m to the statics and to every sphere
+  at every time (checked over 300 s: >= 1.85 m to spheres, >= 1.77 m to statics). Statics unchanged. Runs flown
+  in the 10-sphere easy no longer count against this world.
+- **`dyn_sando_medium`** now has 28 spheres instead of 24. The user first wanted medium like long200
+  (`dyn_long200_smooth_021_clear2`: 0.30 spheres per m, smooth `loop` / `line` motions only, spheres down to 0.3 m
+  apart): `tools/edit/densify_even.py <pkg> dyn_sando_medium 32 loop,line 0.3` added 8 spheres (32, 0.30 per m),
+  to the least occupied arena first. The user then removed 4 so that medium stays below hard: the last round
+  (ids 30-33, arenas 1 / 3 / 5 / 7), which leaves 4 spheres in every arena and is the same as running
+  `densify_even.py` with 28. Now 0.27 spheres per m (easy 0.17, hard 0.26 but 150 m with 35 statics). The 4 new
+  spheres: 3 loops, 1 line, radius 0.45 m as every sphere here (long200 0.25-0.44 m), altitude 1..3 m in 0.25 m
+  steps, the training generator's smooth-path limits, 1.75 m to the statics, >= 0.3 m to the other spheres at
+  every time (checked over 300 s: 0.37 m; 7 sphere pairs now come closer than 1.75 m). Statics unchanged; the
+  24-sphere version is in git history before this change. Runs flown in it no longer count against this world.
+
 ### Denser hard world and SANDO's static forests (2026-11-05, choices by the user)
 
 - **`dyn_sando_hard_dense`** (`tools/edit/densify.py <pkg> dyn_sando_hard dyn_sando_hard_dense 6 40 0.3`):
@@ -111,6 +149,17 @@ no spacing guarantee), kept for an ablation of motions outside the training dist
   deleted on 2026-11-05 before any run in them (recoverable from git history, commit 45b531c).
   `from_sando.py`, `tools/edit/save_edit.py` and `edit_medium.py` still write a `_static` variant when run again:
   delete it, the forests are the static-only worlds.
+- **SANDO in the forests** (2026-11-06, the user's choice: the forests are the default static-only test).
+  `run_worlds.sh sando` flies them with SANDO's own settings for its static forests: `environment_assumption
+  static` and `static_global_mapper.yaml` (what its `run_sim.py` uses for `*_forest`) and `drone_bbox` 0.2 m (its
+  simulation `sando.yaml`; the hardware `sando_hw_quadrotor.yaml` has 0.9 m). With `run.sh`'s defaults
+  (`environment_assumption dynamic`, `hw_global_mapper.yaml`, bbox 0.9; `SANDO_FOREST=hw`) SANDO deadlocked: its
+  map puts the PX4 drone inside the inflated cylinders ("Start is not free") and it has no recovery (24 passes:
+  SR 12.5 / 4.2 / 0 %). bbox 0.7 (the referee's contact size) still deadlocked in a 1.51 m gap of medium after 13
+  passes. With bbox 0.2: medium 24/24 without contact, hard 24/24 reached with 13 static contacts (12 passes) in
+  the narrowest gaps. Contacts are counted with the referee's 0.35 m for every method. Looser forests
+  (SANDO's generator with `min_clearance` 2.5 m, `_wide`) were made and flown on 2026-11-06 and deleted the same
+  day: the user kept SANDO's original forests.
 
 ## Shared-code changes (patches/)
 
@@ -136,7 +185,7 @@ no spacing guarantee), kept for an ablation of motions outside the training dist
 
 # fly a method, 2 episodes on the three worlds, then collisions from the Gazebo pose
 tools/run_worlds.sh kairos 2
-tools/run_worlds.sh sando 2 dyn_sando_hard                # sando | sando_d435 | neo | neo_regression | agile
+tools/run_worlds.sh sando 2 dyn_sando_hard_dense          # sando | sando_d435 | neo | neo_regression | agile
 tools/run_worlds.sh kairos 24 dyn_sando_forest_easy       # official runs: 24 passes
 
 # SANDO's lidar / tracking probe on a world

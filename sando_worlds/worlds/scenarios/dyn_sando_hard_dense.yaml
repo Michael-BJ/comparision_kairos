@@ -3,11 +3,11 @@ generator: sando_dyn_obstacles (from_sando.py)
 bounds:
   lo:
   - -2.0
-  - -9.0
+  - -6.5
   - 0.0
   hi:
   - 152.0
-  - 9.0
+  - 6.5
   - 7.0
 spawn:
 - 0.0
@@ -17118,3 +17118,6 @@ edits:
 - '2026-11-05: densify.py from dyn_sando_hard: 21 spheres added, target 6 per arena
   (long200 density), sphere-sphere gap >= 0.3 m for the new spheres, >= 1.75 m to
   the statics; no more room in {}'
+- '2026-11-06 (user): bounds y -9.0..9.0 -> -6.5..6.5: the spheres move within |y|
+  <= 6.0, the wider bounds left an empty lane at 6..9 m on both sides that the planners
+  used to go around the spheres'

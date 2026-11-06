@@ -57,7 +57,7 @@ A method whose original timing differs (for example NEO: replan 1.0 s, plan 1.0 
 | Passes | 24 per world for the final table (12 is used for quick checks and must be stated) |
 | Reached | within 0.6 m of the pad (`dataset.goal_reach_tol`) |
 | Time limit | 4.0 x distance / 1.5 + 10 s (`timeout_factor:=4.0`) |
-| Bounds | no out-of-bounds end (`bounds_margin:=1000`); the planner is not told the bounds |
+| Bounds | no out-of-bounds end of an episode (`bounds_margin:=1000`); the local targets stay >= 1 m inside the scenario bounds (planner config `bounds_margin: 1.0`, `expert_m4.yaml`); the trajectory itself is not bounded. Excursions are judged by the referee (`hits.py`, section 2) for every method |
 | After a collision | the pass continues (`continue_on_collision:=true`); the world has no collision geometry |
 
 ### Worlds
@@ -68,8 +68,8 @@ A method whose original timing differs (for example NEO: replan 1.0 s, plan 1.0 
 | `dyn_long200_mix_021_clear2` | second test world, mixed sphere motions |
 | `dyn_long200_smooth_021_clear2_static` | static-only control: `dyn_long200_smooth_021_clear2` with all 61 spheres removed (`tools/drop_kinds.py ... line loop --suffix _static`); the same 100 static elements, route, spawn and bounds. Separates static-avoidance failures from dynamic ones. |
 | one long200 world not used before | final numbers, chosen before any method is flown on it |
-| `dyn_sando_easy` / `_medium` / `_hard` | difficulty ladder derived from SANDO's benchmark layout (105 / 105 / 150 m, bricks, gaps >= 1.75 m, training-world motions, hand-edited); how they were made, tools and first 2-episode runs: `sando_worlds/README.md` |
-| `dyn_sando_hard_dense` | `dyn_sando_hard` with 21 more spheres, 6 per arena (60, the long200 density); new spheres keep 0.3 m to other spheres (the training generator's margin, as in long200) and 1.75 m to the statics (2026-11-05) |
+| `dyn_sando_easy` / `_medium` / `_hard_dense` | difficulty ladder derived from SANDO's benchmark layout (105 / 105 / 150 m, bricks, statics 18 / 26 / 35, spheres 18 / 28 / 60 = 0.17 / 0.27 / 0.40 per m, gaps >= 1.75 m to statics, training-world motions, hand-edited); how they were made, tools and first 2-episode runs: `sando_worlds/README.md` |
+| `dyn_sando_hard_dense` | the hard level: `dyn_sando_hard` (39 spheres, deleted 2026-11-06, in git history) with 21 more spheres, 6 per arena (60; long200: 6.1 per arena, 0.30 per m against 0.40 here); new spheres keep 0.3 m to other spheres (the training generator's margin, as in long200) and 1.75 m to the statics (2026-11-05) |
 | `dyn_sando_forest_easy` / `_medium` / `_hard` | static-only: SANDO's own static forests (its "Sim Static" benchmark, `worlds/{easy,medium,hard}_forest.world`), 41 / 81 / 162 cylinders r 1.0-1.5 m, 6 m high, 5 / 10 / 20 % footprint, gap >= 1.5 m; pads (0, 0) -> (105, 0). Replace the `dyn_sando_*_static` controls (deleted 2026-11-05, never flown) |
 
 **All results so far (2026-11-03) were flown in `dyn_long200_smooth_021_clear2` only.** `dyn_long200_mix_021_clear2` and the final world have not been flown by any method yet; every number in this file is for the smooth world. The `dyn_sando_*` worlds have 2-pass checks only (2026-11-04, `sando_worlds/README.md`); how to measure them: section 3.
@@ -83,6 +83,7 @@ The referee reads Gazebo's exact pose (`/model/<model>/odometry`), never the pla
 - A collision is the drone body, radius 0.35 m (`dataset.collision_radius`), touching an obstacle surface.
 - A contact is counted once: samples under 0.35 m that are less than 0.5 s apart belong to one contact.
 - Static and dynamic contacts are counted separately.
+- Out of bounds (2026-11-06): the Gazebo pose more than 1 m outside the scenario bounds (KAIROS's own end-of-episode rule, applied to every method by `hits.py`, second output line). A pass with an excursion does not count as a success.
 - Count from the recorded pose: `python3 ~/kairos_test/20261102_compare/hits.py <NAME> [WORLD]`, which reads `odom_<NAME>.npz` written by `~/kairos_test/20261027_odomlag/record.py`.
 - `summary.json` of a KAIROS run lists each collision under `episodes[i].collisions`. The title of `trajectories.png` counts episode outcomes, which stay `reached` with `continue_on_collision`; the X marks on the plot are the collisions.
 
@@ -90,7 +91,7 @@ The referee reads Gazebo's exact pose (`/model/<model>/odometry`), never the pla
 
 | Metric | Definition |
 |---|---|
-| Success rate (SR) | passes that end within 0.6 m of the pad before the time limit **and** with no collision, out of all passes. A pass that times out and the short follow-on episode that finishes it count as one failed pass. The drone keeps flying after a collision; SR is computed after the run from the referee's per-episode collisions |
+| Success rate (SR) | passes that end within 0.6 m of the pad before the time limit **and** with no collision **and** without leaving the bounds (above), out of all passes. A pass that times out and the short follow-on episode that finishes it count as one failed pass. The drone keeps flying after a collision; SR is computed after the run from the referee's per-episode collisions |
 | Collision rate (CR) | passes with at least one collision, out of all passes |
 | Reached | passes that end within 0.6 m of the pad, collisions ignored (reported next to SR) |
 | Static hits, dynamic hits | contacts as above, also per 100 m flown |
@@ -136,9 +137,8 @@ the dynamic worlds and were never flown).
 
 | World | Kind | Course | Time limit per pass | Statics | Spheres |
 |---|---|---|---|---|---|
-| `dyn_sando_easy` | static + dynamic | (0, 0) -> (105, 0), 105 m | 290 s | 18 | 10 |
-| `dyn_sando_medium` | static + dynamic | (0, 0) -> (105, 0), 105 m | 290 s | 26 | 24 |
-| `dyn_sando_hard` | static + dynamic | (0, 0) -> (150, 0), 150 m | 410 s | 35 | 39 |
+| `dyn_sando_easy` | static + dynamic | (0, 0) -> (105, 0), 105 m | 290 s | 18 | 18 |
+| `dyn_sando_medium` | static + dynamic | (0, 0) -> (105, 0), 105 m | 290 s | 26 | 28 |
 | `dyn_sando_hard_dense` | static + dynamic | (0, 0) -> (150, 0), 150 m | 410 s | 35 | 60 |
 | `dyn_sando_forest_easy` | static only (SANDO's forest) | (0, 0) -> (105, 0), 105 m | 290 s | 41 cylinders | 0 |
 | `dyn_sando_forest_medium` | static only (SANDO's forest) | (0, 0) -> (105, 0), 105 m | 290 s | 81 cylinders | 0 |
@@ -147,7 +147,7 @@ the dynamic worlds and were never flown).
 Everything in section 2 applies, except the course: pad A at x 0, pad B at x 105 (hard: 150), so a pass is
 105 m (hard 150 m) instead of ~200 m. Passes alternate A -> B and B -> A; **24 passes per world** for the final
 table (2 for a quick check, stated as such). How the worlds were made, their known deviations (a few sphere paths
-closer than 1.75 m to a static after the hand edits; open edge lanes at y 6-8 m) and the tools:
+closer than 1.75 m to a static after the hand edits; the open edge lanes at y 6-9 m, closed on 2026-11-06 by bounds y +-6.5 m) and the tools:
 `sando_worlds/README.md`.
 
 **Before a measurement**
@@ -165,26 +165,27 @@ method's own `run.sh` once per world, then `hits.py` for each run):
 
 ```bash
 cd ~/comparision_for_kairos/sando_worlds/tools
-W="dyn_sando_forest_easy dyn_sando_forest_medium dyn_sando_forest_hard dyn_sando_easy dyn_sando_medium dyn_sando_hard dyn_sando_hard_dense"
+W="dyn_sando_forest_easy dyn_sando_forest_medium dyn_sando_forest_hard dyn_sando_easy dyn_sando_medium dyn_sando_hard_dense"
 ./run_worlds.sh kairos 24 $W            # KAIROS+MIGHTY          -> KAIROS_<world>_24ep
-./run_worlds.sh sando 24 $W             # SANDO (own sensors: Mid-360)
+./run_worlds.sh sando 24 $W             # SANDO (own sensors: Mid-360); in the forests with SANDO's own static-forest
+                                        # settings (see below), SANDO_FOREST=hw for the run.sh defaults
 ./run_worlds.sh sando_d435 24 $W        # SANDO with its Table VII sensor (D435), optional
 ./run_worlds.sh neo 24 $W               # NEO-Planner            (NEO_MODEL=... to change the checkpoint)
 ./run_worlds.sh neo_regression 24 $W    # NEO-style regression
 ./run_worlds.sh agile 24 $W             # Agile Autonomy         (AGILE_MODEL=... to change the checkpoint)
 ```
 
-The same run by hand, one world (here KAIROS+MIGHTY in `dyn_sando_hard`):
+The same run by hand, one world (here KAIROS+MIGHTY in `dyn_sando_hard_dense`):
 
 ```bash
 cd ~/kairos_test/20261102_compare
-NAME=KAIROS_dyn_sando_hard_24ep EPISODES=24 WORLD=dyn_sando_hard ./run.sh
+NAME=KAIROS_dyn_sando_hard_dense_24ep EPISODES=24 WORLD=dyn_sando_hard_dense ./run.sh
 source ~/inference_kairos/install/setup.bash
-python3 hits.py KAIROS_dyn_sando_hard_24ep dyn_sando_hard
+python3 hits.py KAIROS_dyn_sando_hard_dense_24ep dyn_sando_hard_dense
 ```
 
 For the other methods replace the first two lines with the method's script from the list above (e.g.
-`cd ~/comparision_for_kairos/SANDO_planner && NAME=SANDO_dyn_sando_hard_24ep EPISODES=24 WORLD=dyn_sando_hard ./run.sh`).
+`cd ~/comparision_for_kairos/SANDO_planner && NAME=SANDO_dyn_sando_hard_dense_24ep EPISODES=24 WORLD=dyn_sando_hard_dense ./run.sh`).
 SANDO is flown with `run.sh`; `run_restart.sh` (restart after a permanent deadlock) is a variant reported next to it
 and only needed if SANDO deadlocks (it did not in the 2-pass checks). MIGHTY, EGO-Planner and NavRL have no run
 script yet (section 4).

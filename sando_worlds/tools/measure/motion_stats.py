@@ -49,7 +49,7 @@ def stats(worlds):
 
 groups = {"TRAINING (%d worlds)" % len(train_worlds): train_worlds,
           "TEST dyn_long200_smooth_021_clear2": ["dyn_long200_smooth_021_clear2"],
-          "SANDO easy+medium+hard": ["dyn_sando_easy", "dyn_sando_medium", "dyn_sando_hard"]}
+          "SANDO easy+medium+hard_dense": ["dyn_sando_easy", "dyn_sando_medium", "dyn_sando_hard_dense"]}
 res = {k: stats(v) for k, v in groups.items()}
 keys = list(next(iter(res.values())).keys())
 for k in keys:

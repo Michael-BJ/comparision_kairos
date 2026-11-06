@@ -1,10 +1,8 @@
-2e5b85c490eb5d5254cc8b5cbe0159b3  scenarios/dyn_sando_easy.yaml
-7a93e6fc855e4a62b00a127dfd11b0b0  worlds/dyn_sando_easy.sdf
-1610a5a6d14c8fa7f45a6f77cd7518dd  scenarios/dyn_sando_medium.yaml
-75a1db9a1171e672356f4602306ee9e9  worlds/dyn_sando_medium.sdf
-c68f803d02da4c223d7adfe94b5a1c4d  scenarios/dyn_sando_hard.yaml
-cde3bb8bbb9e116c0a778175620584ae  worlds/dyn_sando_hard.sdf
-32f8f0589e684903e12a44e45a3a8dc7  scenarios/dyn_sando_hard_dense.yaml
+c55510b3be965a124b95992b018e537f  scenarios/dyn_sando_easy.yaml
+fb9591a5625fc4085bfc3f0935a7a64f  worlds/dyn_sando_easy.sdf
+30f042e45838dff2d8393538977f238f  scenarios/dyn_sando_medium.yaml
+6ac6089fdb7a2e5ffc00b20094ca0771  worlds/dyn_sando_medium.sdf
+867f3603c20c5294ff40a0dc935547c7  scenarios/dyn_sando_hard_dense.yaml
 b4c1766a9cc4fb110a98d150e1f5194b  worlds/dyn_sando_hard_dense.sdf
 5b1fe921761254e18cd13cc0c2d2c469  scenarios/dyn_sando_forest_easy.yaml
 8805e87d3486be38a200fcb7d4db745b  worlds/dyn_sando_forest_easy.sdf
