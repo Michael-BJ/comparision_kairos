@@ -19,7 +19,7 @@ from SANDO's benchmark layout"; SANDO's own numbers (Tables VI / VII) are not co
 | `tools/from_sando.py` | generator (canonical copy: `dyn_gz_worlds/tools/from_sando.py`) |
 | `tools/from_sando_forest.py` | SANDO's static forests (`worlds/*_forest.world`) -> `dyn_sando_forest_*` |
 | `tools/edit/` | scripts that saved the Gazebo edits and changed heights / added spheres; `densify.py` (-> `dyn_sando_hard_dense`) |
-| `tools/measure/` | lidar / tracker probe for SANDO, its analysis, motion statistics, SANDO layout plot |
+| `tools/measure/` | the referee `hits.py` and the per-pass results table `table.py` (section "Scoring"), lidar / tracker probe for SANDO, its analysis, motion statistics, SANDO layout plot |
 | `tools/sando_original/` | SANDO's own rviz-only benchmark on ROS 2 Jazzy (build, demo, benchmark, `/trajs` capture) |
 | `tools/run_worlds.sh` | fly a method on the worlds and count collisions |
 | `tools/show_world.sh` | open a world in Gazebo only (no PX4, no planner) |
@@ -160,6 +160,44 @@ no spacing guarantee), kept for an ablation of motions outside the training dist
   the narrowest gaps. Contacts are counted with the referee's 0.35 m for every method. Looser forests
   (SANDO's generator with `min_clearance` 2.5 m, `_wide`) were made and flown on 2026-11-06 and deleted the same
   day: the user kept SANDO's original forests.
+
+## Scoring (2026-11-07, the same rules for every method)
+
+`tools/measure/hits.py` is the referee (a copy of `~/kairos_test/20261102_compare/hits.py`, which the run scripts
+call): `python3 hits.py <run> <world>` prints the contacts and the out-of-bounds excursions of a whole recording
+(`odom_<run>.npz`, Gazebo pose). `tools/measure/table.py` scores every pass with the same rule:
+
+```bash
+source ~/inference_kairos/install/setup.bash
+WORLDS="dyn_sando_easy dyn_sando_medium dyn_sando_hard_dense" \
+  python3 tools/measure/table.py KAIROS:24ep_v4 KAIROS_raw:24ep_v4 SANDO:24ep_v4R "SANDO:24ep_static07R:SANDO bbox 0.7"
+```
+
+- **Contact**: the drone is a sphere of radius 0.35 m around its Gazebo pose (the x500 with its propellers); a
+  contact is that sphere touching a static obstacle surface (cylinders, boxes) or a moving sphere at the same
+  time. Samples closer than 0.5 s are one contact. The obstacles have no collision geometry, the drone flies on.
+- **Out of bounds**: the pose more than 1 m outside the scenario bounds.
+- **Follow-on**: a pass whose previous pass did not reach the same goal. Both bridges then fly that goal again from
+  where the drone was left (KAIROS raw in `dyn_sando_medium` circled 1-3 m from its goal for ~300 s: one timeout
+  and 8 short follow-ons; SANDO stuck in its own inflated map: every pass after it). One deadlock is one failed
+  pass; follow-ons are listed under the table, not scored.
+- **Passes** = scored passes / passes in the run; Reached, CR (passes with >= 1 contact), SR (reached, no contact,
+  not out of bounds) over the scored passes. Hits = contacts of the whole recording. Min static = the closest the
+  pose came to a static surface in a scored pass (< 0: the centre inside the obstacle). Avg vel = path / duration of
+  the scored passes.
+- A pass's time window comes from its `summary.json` (duration, end position matched on the pose).
+
+**Drone size in the planners.** Every method plans with the x500's size, about 0.35 m radius, the referee's: KAIROS
+(`drone_radius 0.35`, SFC margin 0.6 of its config) and NEO (inflation 0.35) do; SANDO's dynamic-world config
+`sando_hw_quadrotor.yaml` has `drone_bbox 0.9 x 0.9 x 0.5`, and in the forests `run_worlds.sh` sets
+`SANDO_BBOX=0.7` (its simulation default 0.2 treats the drone as almost a point; those runs, suffix `_static02`,
+are kept as the original-settings result). No method uses an extra safety layer (KAIROS: `safety_vision 0`,
+`emergency false`, `memory_inflate false`).
+
+**SANDO restarts** (`SANDO_RESTART=true run_worlds.sh sando ...`, `SANDO_planner/run_restart.sh`): when a
+follow-on also times out < 5 m closer to its goal, SANDO is stuck for good (no corridor contains its start, it has
+no recovery); the stack is restarted from the start pad with the remaining passes (runs `<name>_r1`, `_r2`, ...,
+which `table.py` joins). The stuck pass is scored as failed, its follow-on is not.
 
 ## Shared-code changes (patches/)
 

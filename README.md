@@ -91,7 +91,7 @@ The referee reads Gazebo's exact pose (`/model/<model>/odometry`), never the pla
 
 | Metric | Definition |
 |---|---|
-| Success rate (SR) | passes that end within 0.6 m of the pad before the time limit **and** with no collision **and** without leaving the bounds (above), out of all passes. A pass that times out and the short follow-on episode that finishes it count as one failed pass. The drone keeps flying after a collision; SR is computed after the run from the referee's per-episode collisions |
+| Success rate (SR) | passes that end within 0.6 m of the pad before the time limit **and** with no collision **and** without leaving the bounds (above), out of all passes. A pass that times out and the follow-on episodes that fly its goal again count as one failed pass (the follow-ons are not scored; `sando_worlds/tools/measure/table.py`, section "Scoring" of `sando_worlds/README.md`). The drone keeps flying after a collision; SR is computed after the run from the referee's per-episode collisions |
 | Collision rate (CR) | passes with at least one collision, out of all passes |
 | Reached | passes that end within 0.6 m of the pad, collisions ignored (reported next to SR) |
 | Static hits, dynamic hits | contacts as above, also per 100 m flown |
